@@ -143,6 +143,8 @@ EXECUTABLES = $(EXECUTABLE_FILES)
 TEST_PLIB = test_plib
 endif
 
+TEST_EXEC = test_$(MODULE)
+
 ALL_SRCS = $(PLIB_SRCS) $(LIB_SRCS)
 
 allplib: $(EXECUTABLES) $(LIBRARY)
@@ -174,8 +176,8 @@ tar:
 bintar:
 	(cd ..;tar czf $(MODULE)-$(RELEASE)-$(OS_TYPE)-bin.tar.gz $(AUX_FILES) $(LIBRARY:%=$(MODULE)/%) $(INCLUDES:%=$(MODULE)/%) $(EXECUTABLES:%=$(MODULE)/%))
 
-test: $(TEST_PLIB)
-	$(TEST_PLIB)
+test: $(TEST_EXEC)
+	$(TEST_EXEC)
 
 clean:
 	\rm -f *.o core *.core *.gmon $(EXEC_FILES) LICENSE.i COPYRIGHT.i $(EXECUTABLES) $(CLEAN_FILES) $(TEST_PLIB)
