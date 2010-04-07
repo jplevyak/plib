@@ -99,14 +99,14 @@ ifeq ($(BUILD_VERSION),exported)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
-CFLAGS += -Wall -Wno-non-virtual-dtor -Wno-invalid-offsetof
+CFLAGS += -Wall 
 # debug flags
 ifdef DEBUG
 CFLAGS += -ggdb3 -DDEBUG=1
 endif
 # optimized flags
 ifdef OPTIMIZE
-CFLAGS += -O3 -ffast-math
+CFLAGS += -O3 -march=core2 
 endif
 ifdef PROFILE
 CFLAGS += -pg
