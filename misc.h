@@ -26,6 +26,45 @@ static inline char *xitoa(int i, char *c) { // c points to END of the string
   return c+1;
 }
 
+static inline char *xlltoa(int64 i, char *c) { // c points to END of the string
+  int neg = 0;
+  if (i < 0) { neg = 1; i = -i; }
+  do {
+    *c-- = (char)(i%10+48);
+  } while ((i/=10) > 0);
+  if (neg) *c-- = '-';
+  return c+1;
+}
+
+static inline char *xutoa(uint32 i, char *e) {
+  do {
+    *--e = (char)(i%10+48);
+  } while ((i/=10) > 0);
+  return e;
+}
+
+static inline char *xutoa(uint64 i, char *e) {
+  do {
+    *--e = (char)(i%10+48);
+  } while ((i/=10) > 0);
+  return e;
+}
+
+static inline uint64 xatoull(char *s, char *e) {
+  uint64 n = 0;
+  if (isdigit(*s)) {
+    n = *s - '0';
+    s++;
+    if (s >= e) return n;
+  }
+  while (isdigit(*s)) {
+    n *= 10;
+    n += *s - '0';
+    s++;
+  }
+  return n;
+}
+
 static inline void *_xmemdup(void *p, int len) {
   if (len <= 0)
     return 0;

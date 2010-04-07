@@ -78,7 +78,7 @@ callback_dynamic(char *name) {
   }
 }
 
-int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
+int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n3) {
   char name[1024];
   int result = 0;
   build_name(name, n1, n2, n3);
@@ -93,13 +93,13 @@ int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
         *pint = def;
         RETURN(-1);
       }
-      *pint = (int)strtol(v, 0, 0);
+      *pint = strtoll(v, 0, 0);
       RETURN(0);
     }
     case SET_CONFIG: {
       char value[1024];
       value[1023] = 0;
-      char *v = xitoa(def, value + 1022);
+      char *v = xlltoa(def, value + 1022);
       MECharChar *e = config.get_internal(name);
       if (e) {
         if (pint)
