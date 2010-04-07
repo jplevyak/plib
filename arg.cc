@@ -50,8 +50,9 @@ copydvec(const void *l, char *arg, int n) {
   }
 }
 
-void 
+static int 
 process_arg(ArgumentState *arg_state, int i, char ***argv, char *flag) {
+  int done = 0;
   char *arg = NULL;
   ArgumentDescription *desc = arg_state->desc;
   if (desc[i].type && desc[i].location) {
@@ -61,7 +62,12 @@ process_arg(ArgumentState *arg_state, int i, char ***argv, char *flag) {
       case 'T': *(int *)desc[i].location = !*(int *)desc[i].location; break;
       case '+': (*(int *)desc[i].location)++; break;
       default: {
-        arg = *++(**argv) ? **argv : *++(*argv);
+        if (*++(**argv))
+          arg = **argv;
+        else {
+          arg = *++(*argv);
+          done++;
+        }
         if (!arg) missing_arg(flag);
         switch (type) {
           case 'I': *(int *)desc[i].location = atoi(arg); break;
@@ -83,11 +89,12 @@ process_arg(ArgumentState *arg_state, int i, char ***argv, char *flag) {
   }
   if (desc[i].pfn)
     desc[i].pfn(arg_state, arg);
+  return done;
 }
 
-void
+int
 process_args(ArgumentState *arg_state, int argc, char **argv) {
-  int i, len;
+  int i, len, done = 0;
   char *end = 0;
   ArgumentDescription *desc = arg_state->desc;
   /* Grab Environment Variables */
@@ -115,6 +122,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
   }
   /* Grab Command Line Arguments */
   while (*++argv) {
+    done++;
     if (**argv == '-') {
       if ((*argv)[1] == '-') {
         for (i = 0;; i++) {
@@ -132,7 +140,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
               *argv += strlen(*argv) - 1;
             else
               *argv = end;
-            process_arg(arg_state, i, &argv, flag);
+            done += process_arg(arg_state, i, &argv, flag);
             break;
           }
         }
@@ -142,7 +150,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
             if (!desc[i].name)
               bad_flag((*argv)-1);
             if (desc[i].key == **argv) {
-              process_arg(arg_state, i, &argv, (*argv)-1);
+              done += process_arg(arg_state, i, &argv, (*argv)-1);
               break;
             }
           }
@@ -155,6 +163,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
       arg_state->file_argument[arg_state->nfile_arguments] = NULL;
     }
   }
+  return done;
 }
 
 static void

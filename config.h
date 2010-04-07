@@ -12,7 +12,7 @@ EXTERN char config_filenames[1024] EXTERN_INIT("~/.plibrc,plib.init");
 
 // -1 for not found
 int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0);
-int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
+static inline int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
   int64 v = 0;
   int64_config(dyn, &v, (int)def, n1, n2, n3);
   return (int)v;
