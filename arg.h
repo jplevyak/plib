@@ -38,8 +38,8 @@ typedef struct ArgumentState {
   unsigned int options;
   ArgumentDescription *desc;
 #if defined __cplusplus
-  ArgumentState(cchar *name, ArgumentDescription *adesc) 
-    : file_argument(0), nfile_arguments(0), program_name(name), options(0),
+  ArgumentState(cchar *name, ArgumentDescription *adesc, int aoptions = 0) 
+    : file_argument(0), nfile_arguments(0), program_name(name), options(aoptions),
       desc(adesc) {}
 #endif
 } ArgumentState;
