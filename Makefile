@@ -166,7 +166,7 @@ $(TEST_PLIB): $(TEST_PLIB_OBJS) $(LIB_OBJS) $(LIBRARIES)
 
 LICENSE.i: LICENSE
 	rm -f LICENSE.i
-	cat $< | sed s/\"/\\\\\"/g | sed s/\^/\"/g | sed s/$$/\\\\n\"/g > $@
+	cat $< | sed s/\"/\\\\\"/g | sed s/\^/\"/g | sed s/$$/\\\\n\"/g | sed 's/%/%%/g' > $@
 
 COPYRIGHT.i: LICENSE
 	rm -f COPYRIGHT.i

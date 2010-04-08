@@ -44,6 +44,11 @@ static void build_name(char *name, cchar *n1, cchar *n2, cchar *n3) {
   *n++ = 0;
 }
 
+int int64_dynfn(char *data, char *value) {
+  *((int64*)data) = (int64)strtoll(value, 0, 0);
+  return 0;
+}
+
 int int_dynfn(char *data, char *value) {
   *((int*)data) = (int)strtol(value, 0, 0);
   return 0;
@@ -85,7 +90,7 @@ int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n
   pthread_mutex_lock(&config_lock);
   switch (dyn) {
     case DYNAMIC_CONFIG:
-      dynamic(name, (char*)pint, int_dynfn);
+      dynamic(name, (char*)pint, int64_dynfn);
       // fall through
     case GET_CONFIG: {
       char *v = config.get(name);
@@ -94,6 +99,47 @@ int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n
         RETURN(-1);
       }
       *pint = strtoll(v, 0, 0);
+      RETURN(0);
+    }
+    case SET_CONFIG: {
+      char value[1024];
+      value[1023] = 0;
+      char *v = xlltoa(def, value + 1022);
+      MECharChar *e = config.get_internal(name);
+      if (e) {
+        if (pint)
+          *pint = (int64)strtoll(e->value, 0, 0);
+        FREE(e->value);
+        e->value = dupstr(v);
+        RETURN(0);
+      }
+      config.put(dupstr(name), dupstr(v));
+      RETURN(-1);
+    }
+  }
+Lreturn:
+  if (dyn == SET_CONFIG)
+    callback_dynamic(name);
+  pthread_mutex_unlock(&config_lock);
+  return result;
+}
+
+int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
+  char name[1024];
+  int result = 0;
+  build_name(name, n1, n2, n3);
+  pthread_mutex_lock(&config_lock);
+  switch (dyn) {
+    case DYNAMIC_CONFIG:
+      dynamic(name, (char*)pint, int_dynfn);
+      // fall through
+    case GET_CONFIG: {
+      char *v = config.get(name);
+      if (!v) {
+        *pint = def;
+        RETURN(-1);
+      }
+      *pint = strtol(v, 0, 0);
       RETURN(0);
     }
     case SET_CONFIG: {

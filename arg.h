@@ -46,7 +46,6 @@ typedef struct ArgumentState {
 
 void usage(ArgumentState *arg_state, char *exit_if_null);
 int process_args(ArgumentState *arg_state, int argc, char **argv); // ret = # done
-void reprocess_config_args(ArgumentState *arg_state, int argc, char **argv);
 void free_args(ArgumentState *arg_state);
 
 #endif

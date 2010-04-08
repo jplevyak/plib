@@ -3,6 +3,7 @@
 */
 #include "plib.h"
 #include <signal.h>
+#include <glob.h>
 
 int
 buf_read(cchar *pathname, char **buf, int *len) {
@@ -91,6 +92,20 @@ int appendfile2fp(FILE *fp, char *filename) {
   assert(fwrite(b, l, 1, fp) == (size_t)l);
   FREE(b);
   return 0;
+}
+
+int xmkdir(cchar *p, mode_t mode) {
+  char pp[512]; strcpy(pp, p);
+  if (pp[strlen(pp)-1] == '/') pp[strlen(pp)-1] = 0;
+  if (pp[0] == '~') {
+    char *home = getenv("HOME");
+    if (home) {
+      memmove(pp + strlen(home) - 1, pp, strlen(pp));
+      memcpy(pp, home, strlen(home));
+      pp[strlen(home)] = '/';
+    }
+  }
+  return mkdir(pp, mode);
 }
 
 #define tohex1(_x) \

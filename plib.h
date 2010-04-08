@@ -78,6 +78,8 @@ typedef const char *ccharptr_t;
 #define RND64() genrand64_int64()
 #define RNDD() genrand64_real1()
 
+#define __STDC_LIMIT_MACROS 1
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdlib.h>
