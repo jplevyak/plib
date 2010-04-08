@@ -122,7 +122,7 @@ LIBS += -lm
 AUX_FILES = $(MODULE)/Makefile $(MODULE)/LICENSE $(MODULE)/README
 TAR_FILES = $(AUX_FILES) $(TEST_FILES) $(MODULE)/BUILD_VERSION 
 
-LIB_SRCS = arg.cc config.cc misc.cc util.cc service.cc list.cc vec.cc map.cc threadpool.cc barrier.cc prime.cc mt19937-64.cc unit.cc log.cc conn.cc md5c.cc dlmalloc.cc persist.cc hash.cc
+LIB_SRCS = arg.cc config.cc misc.cc util.cc service.cc list.cc vec.cc map.cc thrpool.cc barrier.cc prime.cc mt19937-64.cc unit.cc log.cc conn.cc md5c.cc dlmalloc.cc persist.cc hash.cc
 LIB_OBJS = $(LIB_SRCS:%.cc=%.o)
 
 TEST_PLIB_SRCS = plib.cc
@@ -199,55 +199,7 @@ version.o: Makefile
 # DO NOT DELETE THIS LINE -- mkdep uses it.
 # DO NOT PUT ANYTHING AFTER THIS LINE, IT WILL GO AWAY.
 
-arg.o: arg.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-config.o: config.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-misc.o: misc.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-util.o: util.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-service.o: service.cc plib.h arg.h barrier.h config.h dlmalloc.h \
-  freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
-  util.h conn.h md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-list.o: list.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-vec.o: vec.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-map.o: map.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-threadpool.o: threadpool.cc plib.h arg.h barrier.h config.h dlmalloc.h \
-  freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
-  util.h conn.h md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-barrier.o: barrier.cc plib.h arg.h barrier.h config.h dlmalloc.h \
-  freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
-  util.h conn.h md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-prime.o: prime.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
 mt19937-64.o: mt19937-64.cc mt64.h
-unit.o: unit.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-log.o: log.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-conn.o: conn.cc plib.h arg.h barrier.h config.h dlmalloc.h freelist.h \
-  defalloc.h list.h log.h vec.h map.h threadpool.h misc.h util.h conn.h \
-  md5.h mt64.h persist.h prime.h service.h timer.h unit.h
 md5c.o: md5c.cc md5.h
-dlmalloc.o: dlmalloc.cc plib.h arg.h barrier.h config.h dlmalloc.h \
-  freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
-  util.h conn.h md5.h mt64.h persist.h prime.h service.h timer.h unit.h
-persist.o: persist.cc plib.h arg.h barrier.h config.h dlmalloc.h \
-  freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
-  util.h conn.h md5.h mt64.h persist.h prime.h service.h timer.h unit.h
 
 # IF YOU PUT ANYTHING HERE IT WILL GO AWAY

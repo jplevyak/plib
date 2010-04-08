@@ -114,7 +114,7 @@ typedef const char *ccharptr_t;
 #include "log.h"
 #include "vec.h"
 #include "map.h"
-#include "threadpool.h"
+#include "thrpool.h"
 #include "misc.h"
 #include "util.h"
 #include "conn.h"
