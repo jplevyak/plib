@@ -100,7 +100,7 @@ int xmkdir(cchar *p, mode_t mode) {
   if (pp[0] == '~') {
     char *home = getenv("HOME");
     if (home) {
-      memmove(pp + strlen(home) - 1, pp, strlen(pp));
+      memmove(pp + strlen(home) - 1, pp, strlen(pp)+1);
       memcpy(pp, home, strlen(home));
       pp[strlen(home)] = '/';
     }
