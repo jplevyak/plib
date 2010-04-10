@@ -1,9 +1,12 @@
 /* -*-Mode: c++; -*-
-   Copyright (c) 2003-2008 John Plevyak, All Rights Reserved
+   Copyright (c) 2003-2010 John Plevyak, All Rights Reserved
 */
 #include "plib.h"
 #include <signal.h>
 #include <glob.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+
 
 int
 buf_read(cchar *pathname, char **buf, int *len) {
@@ -224,5 +227,55 @@ bool file_exists(cchar *p1, cchar *p2, cchar *p3, cchar *p4) {
   if (stat(filename, &sb) < 0) return false;
   return 1;
 }
+
+int getifaddrname(struct sockaddr_in *addr, int *pmtu, char *ifname, int ifname_len) {
+  int fd;
+  struct ifconf	ifc;
+  struct ifreq ibuf[16], *ifr, *ifrend;
+
+  if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    return -1;
+
+  memset(ibuf, 0, sizeof(ibuf));
+  ifc.ifc_len = sizeof(ibuf);
+  ifc.ifc_buf = (caddr_t)ibuf;
+  if (ioctl(fd, SIOCGIFCONF, (char*)&ifc) < 0 || ifc.ifc_len < (int)sizeof(struct ifreq))
+    return -1;
+  ifr = ibuf;
+  ifrend = (struct ifreq*)((char*)ibuf + ifc.ifc_len);
+
+  for (; ifr < ifrend; ifr++) {
+    if (ioctl(fd, SIOCGIFFLAGS, (char*)ifr) < 0 || 
+        !(ifr->ifr_flags & IFF_UP) || 
+        ifr->ifr_flags & IFF_LOOPBACK)
+      continue;
+    // if I have already seen this interface, skip it
+    if (ifname && ifname_len && ifname[0] && !strstr(ifr->ifr_name, ifname))
+      continue;
+    if (ifname && ifname_len) {
+      strncpy(ifname, ifr->ifr_name, ifname_len-1);
+      ifname[ifname_len-1] = 0;
+    }
+    if (ioctl(fd, SIOCGIFADDR, (char*)ifr) < 0)
+      return -1;
+    *addr = *(struct sockaddr_in*)&ifr->ifr_addr;
+    if (pmtu) {
+      if (ioctl(fd, SIOCGIFMTU, (char*)ifr) < 0)
+        *pmtu = -1;
+      else {
+#ifdef __sun__
+        *pmtu = ifr->ifr_metric;
+#else
+        *pmtu = ifr->ifr_mtu;
+#endif
+      }
+    }
+    close(fd);
+    return 0;
+  }
+  close(fd);
+  return -1;
+}
+
 
 

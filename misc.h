@@ -108,6 +108,9 @@ bool is_directory(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
 bool is_regular_file(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
 bool file_exists(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
 char *dupstrs(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
+// ifname can be passed in or a emtpy buffer if you want to get the interface name back
+// mtu is -1 if unknown
+int getifaddrname(struct sockaddr_in *addr, int *pmtu = 0, char *ifname = 0, int ifname_len = 0);
 
 #define htonll(_x) (((uint64)htonl((uint32)_x)) | (((uint64)(htonl((uint32)((_x)>>32))))<<32))
 #define ntohll(_x) (((uint64)ntohl((uint32)_x)) | (((uint64)(ntohl((uint32)((_x)>>32))))<<32))
