@@ -94,6 +94,20 @@ int appendfile2fp(FILE *fp, char *filename) {
   return 0;
 }
 
+int expand_filename(char *p, int len) {
+  (void) len;
+  if (p[0] == '~') {
+    char *home = getenv("HOME");
+    if (home) {
+      if (strlen(home) + strlen(p) + 1 > (uint)len) return -1;
+      memmove(p + strlen(home) - 1, p, (int)strlen(p)+1);
+      memcpy(p, home, strlen(home));
+      p[strlen(home)] = '/';
+    }
+  }
+  return 0;
+}
+
 int xmkdir(cchar *p, mode_t mode) {
   char pp[512]; strcpy(pp, p);
   if (pp[strlen(pp)-1] == '/') pp[strlen(pp)-1] = 0;

@@ -16,6 +16,7 @@ char *trim(char *s, char *e = 0);
 bool str2bool(char *s);
 int str2strVec(char *s, Vec<char *> &v, char *delimitor = ",");
 int xmkdir(cchar *p, mode_t mode);
+int expand_filename(char *p, int len);
 
 static inline char *xitoa(int i, char *c) { // c points to END of the string
   int neg = 0;
