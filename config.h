@@ -35,7 +35,7 @@ static inline int get_int64_config(cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
   int64_config(GET_CONFIG, &v, INT64_MIN, n1, n2, n3);
   return (int)v;
 }
-static inline int get_int64_config(int64 def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
+static inline int64 get_int64_config(int64 def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
   int64 v = 0;
   int64_config(GET_CONFIG, &v, def, n1, n2, n3);
   return (int)v;
@@ -43,6 +43,11 @@ static inline int get_int64_config(int64 def, cchar *n1, cchar *n2 = 0, cchar *n
 static inline cchar *get_string_config(cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
   cchar *v = 0;
   string_config(GET_CONFIG, &v, 0, n1, n2, n3);
+  return v;
+}
+static inline cchar *get_string_config_default(cchar *def, cchar *n1, cchar *n2 = 0, cchar *n3 = 0) {
+  cchar *v = 0;
+  string_config(GET_CONFIG, &v, def, n1, n2, n3);
   return v;
 }
 #endif
