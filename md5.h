@@ -35,6 +35,6 @@ void   MD5Pad (MD5_CTX *);
 void   MD5Final (unsigned char [16], MD5_CTX *);
 char * MD5End(MD5_CTX *, char *);
 char * MD5File(const char *, char *);
-char * MD5Data(const unsigned char *, unsigned int, char *);
+char * MD5Data(unsigned char [16], const unsigned char *output, unsigned int output_len);
 
 #endif

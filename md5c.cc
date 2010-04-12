@@ -303,3 +303,12 @@ MD5Transform (unsigned int state[4], const unsigned char block[64])
 	/* Zeroize sensitive information. */
 	memset ((void *)x, 0, sizeof (x));
 }
+
+
+char * MD5Data(unsigned char output[16], const unsigned char *input, unsigned int input_length) {
+  MD5_CTX context;
+  MD5Init(&context);
+  MD5Update(&context, input, input_length);
+  MD5Final(output, &context);
+  return (char*)output;
+}
