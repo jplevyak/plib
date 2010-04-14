@@ -40,7 +40,7 @@ int str_len(cchar *s);
 class ConnFactory;
 
 class Conn : public ThreadPoolJob { public:
-  int fd;
+  int ifd, ofd;
   ConnFactory *factory;
   buffer_t rbuf, wbuf;
 
@@ -98,7 +98,6 @@ class Server : public ConnFactory { public:
   Server(cchar *aname);
 };
 
-void init_conn();
 void add_string_buffer(Vec<buffer_t> &bufs, char *str, int len);
 void copy_str_to_buf(char *s, char *dest, int *dest_len); // dest_len read for limit and set
 

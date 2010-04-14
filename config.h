@@ -1,8 +1,10 @@
 /* -*-Mode: c++; -*-
-   Copyright (c) 2003-2008 John Plevyak, All Rights Reserved
+   Copyright (c) 2003-2010 John Plevyak, All Rights Reserved
 */
 #ifndef _config_H
 #define _config_H
+
+class Conn;
 
 #define GET_CONFIG              0
 #define DYNAMIC_CONFIG          1
@@ -17,6 +19,8 @@ int string_config(int dyn, cchar **pstring, cchar *def, cchar *n1, cchar *n2 = 0
 
 void init_config();
 void reinit_config();
+void write_config(FILE *fp);
+void write_config(Conn *c);
 typedef void (*config_callback_pfn)(void *);
 void config_callback(config_callback_pfn pfn, void *);
 

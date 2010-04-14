@@ -277,5 +277,3 @@ int getifaddrname(struct sockaddr_in *addr, int *pmtu, char *ifname, int ifname_
   return -1;
 }
 
-
-

@@ -221,6 +221,7 @@ void init_config() {
 
 static void read_config(FILE *fp) {
   char ss[256], *s;
+  pthread_mutex_lock(&config_lock);
   while (fgets(ss, 255, fp)) {
     s = trim(ss);
     if (*s == '#' || *s == '/' || *s == 0 || *s == ';')
@@ -235,6 +236,7 @@ static void read_config(FILE *fp) {
       continue;
     string_config(SET_CONFIG, 0, eq, s);
   }
+  pthread_mutex_unlock(&config_lock);
   fclose(fp);
 }
 
@@ -275,6 +277,24 @@ static void read_config() {
     if (*e == 0) break;
     s = e;
   }
+}
+
+void write_config(FILE *fp) {
+  pthread_mutex_unlock(&config_lock);
+  form_Map(MECharChar, m, config)
+    fprintf(fp, "%s = %s\n", m->key, m->value);
+  pthread_mutex_lock(&config_lock);
+}
+
+void write_config(Conn *c) {
+  pthread_mutex_unlock(&config_lock);
+  form_Map(MECharChar, m, config) {
+    c->append_string(m->key);
+    c->append_string(" = ");
+    c->append_string(m->value);
+    c->append_string("\n");
+  }
+  pthread_mutex_lock(&config_lock);
 }
 
 void reinit_config() {

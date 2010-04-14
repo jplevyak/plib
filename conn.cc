@@ -12,7 +12,7 @@ static cchar *const weekdays[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sa
 static cchar *const months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 Conn::Conn() {
-  fd = -1;
+  ifd = ofd = -1;
   factory = 0;
   rbuf.buf = rbuf.cur = rbuf.end = rbuf.bufend = 0; rbuf.next = 0;
   wbuf.buf = wbuf.cur = wbuf.end = wbuf.bufend = 0; wbuf.next = 0;
@@ -40,7 +40,7 @@ int Conn::get_line() {
     int lend = rbuf.bufend - rbuf.end;
     if (lend <= 0)
       return -1;
-    int r = read(fd, rbuf.end, lend);
+    int r = read(ifd, rbuf.end, lend);
     if (r <= 0) {
       switch (errno) {
         case EINTR: continue;
@@ -60,7 +60,7 @@ int Conn::get(int n) {
     int lend = rbuf.bufend - rbuf.end;
     if (lend <= 0)
       return -1;
-    int r = read(fd, rbuf.end, lend);
+    int r = read(ifd, rbuf.end, lend);
     if (r <= 0) {
       switch (errno) {
         case EINTR: continue;
@@ -77,7 +77,7 @@ Lagain:
   int lend = rbuf.bufend - rbuf.end;
   if (lend <= 0)
     return -1;
-  int r = read(fd, rbuf.end, lend);
+  int r = read(ifd, rbuf.end, lend);
   if (r <= 0) {
     switch (errno) {
       case EINTR: goto Lagain;
@@ -92,7 +92,7 @@ Lagain:
 int Conn::put_string(cchar *str, int len) {
   cchar *s = str;
   while (1) {
-    int r = write(fd, s, len);
+    int r = write(ofd, s, len);
     if (r < 0) {
       switch (errno) {
         case EINTR: continue;
@@ -114,7 +114,7 @@ int Conn::put() {
     int r = 0;
     if (!wbuf.next) {
       int len = wbuf.end - wbuf.cur;
-      r = write(fd, wbuf.cur, len);
+      r = write(ofd, wbuf.cur, len);
     } else {
       int n = 2;
       buffer_t *b = wbuf.next;
@@ -127,7 +127,7 @@ int Conn::put() {
         int l = b->end - b->cur;
         iovec[i].iov_len = l;
         b = b->next;
-        r = writev(fd, iovec, n);
+        r = writev(ofd, iovec, n);
       }
     }
     if (r < 0) {
@@ -143,8 +143,11 @@ int Conn::put() {
 }
 
 int Conn::done() {
-  if (fd != -1) {
-    ::close(fd);
+  if (ifd != -1 && ifd >= STDERR_FILENO) {
+    ::close(ifd);
+  }
+  if (ofd != ifd && ofd != -1 && ofd >= STDERR_FILENO) {
+    ::close(ofd);
   }
   pthread_mutex_t *l = &factory->lock;
   pthread_mutex_lock(l);

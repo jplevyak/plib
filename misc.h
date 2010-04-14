@@ -97,6 +97,15 @@ static inline char *skip_token(char *s) {
   return s;
 }
 
+static inline int get_token(char **ss) {
+  char *s = *ss;
+  while (isspace(*s)) s++;
+  *ss = s;
+  char *p = s;
+  while (*s && !isspace(*s)) s++;
+  return s-p;
+}
+
 static inline char *skip_eol(char *p) { 
   while (*p && *p != '\n') p++;
   return p;

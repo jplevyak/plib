@@ -122,8 +122,8 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
   }
   /* Grab Command Line Arguments */
   while (*++argv) {
-    done++;
     if (**argv == '-') {
+      done++;
       if ((*argv)[1] == '-') {
         for (i = 0;; i++) {
           if (!desc[i].name)
