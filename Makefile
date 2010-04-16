@@ -1,5 +1,5 @@
 # Makefile for PLIB
-# Copyright (C) 2004-2009 John Plevyak, All Rights Reserved
+# Copyright (C) 2004-2010 John Plevyak, All Rights Reserved
 
 ifndef USE_PLIB
 MODULE=plib
