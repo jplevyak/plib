@@ -62,6 +62,7 @@ class Conn : public ThreadPoolJob { public:
   int append_string(cchar *str, int len) { append_to_buf_n(wbuf, (byte*)str, len); return 0; }
   int append_bytes(void *b, int len) { append_to_buf_n(wbuf, (byte*)b, len); return 0; }
   int append_str(cchar *str) { return append_string(str, str_len(str)); }
+  int append_print(cchar *str, ...);
 
   int put_string(cchar *str, int len);
 #define PUT_STRING(_s) put_string(_s, sizeof(_s)-1)

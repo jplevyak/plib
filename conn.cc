@@ -169,6 +169,14 @@ int Conn::error(cchar *s) {
   return done();
 }
 
+int Conn::append_print(cchar *str, ...) {
+  char nstr[2048];
+  va_list ap;
+  va_start(ap, str);
+  vsnprintf(nstr, 2048, str, ap);
+  return append_string(nstr);
+}
+
 void add_string_buffer(Vec<buffer_t> &bufs, byte *buf, int len) {
   int i = bufs.n;
   bufs.add();
