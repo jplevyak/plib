@@ -1,0 +1,10 @@
+plib.port = 4444
+plib.test = 1
+alog.log.filename = stderr
+alog.log.filename = plib.log
+alog.log.level = DEBUG
+// ignored
+# ignore this too
+; ignore this also
+test.size = 10000
+test.threads = 10
