@@ -44,6 +44,19 @@ static inline char *scpy(char *d, cchar *s) {
   return d;
 }
 
+// copy within buffer and null terminate with optional max len to copy
+// return number copied not including null
+static inline int strcpyn(char *ad, cchar *s, int buflen, int len = -1) {
+  char *d = ad;
+  if (len == 0 || buflen <= 0)
+    return 0;
+  if (len > 0 && len < buflen)
+    buflen = len + 1;
+  while (*s && d - ad < buflen - 1) *d++ = *s++;
+  *d++ = 0;
+  return d - ad - 1;
+}
+
 inline void init_recursive_mutex(pthread_mutex_t *mutex) {
   pthread_mutexattr_t mutexattr;
   pthread_mutexattr_init(&mutexattr);

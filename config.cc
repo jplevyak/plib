@@ -286,6 +286,30 @@ void write_config(FILE *fp) {
   pthread_mutex_lock(&config_lock);
 }
 
+int replace_config(cchar *fn) {
+  char f[1024];
+  strcpy(f, fn);
+  char *d = strrchr(f, '/');
+  if (!d)
+    return -1;
+  strcpy(d + 1, "conftmpXXXXXX");
+  int fd = mkstemp(f);
+  if (fd < 0) {
+    fprintf(stderr, "mkstmp failed %d: %s\n", errno, strerror(errno));
+    return fd;
+  }
+  FILE *tmpf = fdopen(fd, "w");
+  write_config(tmpf);
+  fclose(tmpf);
+  int r = rename(f, fn);
+  if (r < 0) {
+    fprintf(stderr, "rename failed %d: %s, %s %s\n", 
+            errno, strerror(errno), f, fn);
+    unlink(f);
+  }
+  return r;
+}
+
 void write_config(Conn *c) {
   pthread_mutex_unlock(&config_lock);
   form_Map(MECharChar, m, config) {

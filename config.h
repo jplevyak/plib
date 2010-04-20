@@ -20,6 +20,7 @@ int string_config(int dyn, cchar **pstring, cchar *def, cchar *n1, cchar *n2 = 0
 void init_config();
 void reinit_config();
 void write_config(FILE *fp);
+int replace_config(cchar *fn);
 void write_config(Conn *c);
 typedef void (*config_callback_pfn)(void *);
 void config_callback(config_callback_pfn pfn, void *);

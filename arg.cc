@@ -161,6 +161,8 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
         sizeof(cchar**) * (arg_state->nfile_arguments + 2));
       arg_state->file_argument[arg_state->nfile_arguments++] = dupstr(*argv);
       arg_state->file_argument[arg_state->nfile_arguments] = NULL;
+      if (arg_state->options & ARG_OPT_STOP_ON_FILE_ARGUMENT)
+        break;
     }
   }
   return done;
@@ -186,7 +188,8 @@ usage(ArgumentState *arg_state, char *arg) {
   ArgumentDescription *desc = arg_state->desc;
   int i;
 
-  fprintf(stderr,"Usage: %s [flags|args]\n",arg_state->program_name);
+  if (!(arg_state->options & ARG_OPT_NO_DEFAULT_USAGE_HEADER))
+    fprintf(stderr,"Usage: %s [flags|args]\n",arg_state->program_name);
   for (i = 0;; i++) {
     if (!desc[i].name)
       break;

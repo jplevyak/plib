@@ -12,8 +12,9 @@
 #define atoll atol
 #endif
 
-#define DBL_ARG_UNSET (DBL_MAX)
-#define ARG_OPT_STOP_ON_FILE_ARGUMENT 0x1
+#define DBL_ARG_UNSET                           (DBL_MAX)
+#define ARG_OPT_STOP_ON_FILE_ARGUMENT           0x1
+#define ARG_OPT_NO_DEFAULT_USAGE_HEADER         0x2
 
 /* Argument Handling
 */
