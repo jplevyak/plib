@@ -157,7 +157,7 @@ template <class K, class AHashFns, class C, class A = DefaultAlloc> class ChainH
 template<class F = StringHashFns, class A = DefaultAlloc>
 class StringChainHash : public ChainHash<cchar *, F, A> {
  public:
-  cchar *cannonicalize(cchar *s, cchar *e);
+  cchar *canonicalize(cchar *s, cchar *e);
 };
 
 template <class C, class AHashFns, int N, class A = DefaultAlloc> class NBlockHash : public gc {
@@ -654,7 +654,7 @@ ChainHashMap<K, AHashFns, C, A>::get_values(Vec<C> &values) {
 }
 
 template <class F, class A> inline cchar *
-StringChainHash<F,A>::cannonicalize(cchar *s, cchar *e) {
+StringChainHash<F,A>::canonicalize(cchar *s, cchar *e) {
   uintptr_t h = 0;
   cchar *a = s;
   // 31 changed to 27, to avoid prime2 in vec.cpp
