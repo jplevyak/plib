@@ -41,11 +41,13 @@ template <class K, class C> class MapElem : public gc {
 
 template <class K, class C, class A = DefaultAlloc> class Map : public Vec<MapElem<K,C>, A> {
  public:
-  using Vec<MapElem<K, C>, A>::n;
-  using Vec<MapElem<K, C>, A>::i;
-  using Vec<MapElem<K, C>, A>::v;
-  MapElem<K,C> *put(K akey, C avalue);
-  MapElem<K,C> *put(K akey);
+  typedef MapElem<K,C> ME;
+  typedef Vec<ME,A> PType;
+  using PType::n;
+  using PType::i;
+  using PType::v;
+  ME *put(K akey, C avalue);
+  ME *put(K akey);
   C get(K akey);
   C *getp(K akey);
   void get_keys(Vec<K> &keys);
@@ -158,6 +160,7 @@ template<class F = StringHashFns, class A = DefaultAlloc>
 class StringChainHash : public ChainHash<cchar *, F, A> {
  public:
   cchar *canonicalize(cchar *s, cchar *e);
+  cchar *canonicalize(cchar *s) { return canonicalize(s, s + strlen(s)); }
 };
 
 template <class C, class AHashFns, int N, class A = DefaultAlloc> class NBlockHash : public gc {

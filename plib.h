@@ -109,6 +109,7 @@ typedef const char *ccharptr_t;
 #include "arg.h"
 #include "barrier.h"
 #include "config.h"
+#include "stat.h"
 #include "dlmalloc.h"
 #include "freelist.h"
 #include "defalloc.h"
