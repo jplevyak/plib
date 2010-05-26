@@ -9,15 +9,8 @@
 
 
 int
-buf_read(cchar *pathname, char **buf, int *len) {
+buf_read(int fd, char **buf, int *len) {
   struct stat sb;
-  int fd;
-
-  *buf = 0;
-  *len = 0;
-  fd = open(pathname, O_RDONLY);
-  if (fd <= 0) 
-    return -1;
   memset(&sb, 0, sizeof(sb));
   fstat(fd, &sb);
   *len = sb.st_size;
@@ -25,8 +18,21 @@ buf_read(cchar *pathname, char **buf, int *len) {
   (*buf)[*len] = 0;             /* terminator */
   (*buf)[*len + 1] = 0;         /* sentinal */
   assert(read(fd, *buf, *len) == *len);
-  close(fd);
   return *len;
+}
+
+int
+buf_read(cchar *pathname, char **buf, int *len) {
+  int fd;
+
+  *buf = 0;
+  *len = 0;
+  fd = open(pathname, O_RDONLY);
+  if (fd <= 0) 
+    return -1;
+  int ret = buf_read(fd, buf, len);
+  close(fd);
+  return ret;
 }
 
 void

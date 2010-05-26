@@ -10,6 +10,7 @@
 #include "vec.h"
 
 int buf_read(cchar *pathname, char **buf, int *len);
+int buf_read(int fd, char **buf, int *len);
 void fail(cchar *str, ...);
 void error(cchar *fmt, ...);
 char *trim(char *s, char *e = 0);

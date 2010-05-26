@@ -12,7 +12,15 @@
 #define HRTIME_HOUR (60*HRTIME_MIN)
 #define HRTIME_DAY (24*HRTIME_HOUR)
 
-#define STREQ(_s, _const_string) ((strlen(_s) == sizeof(_const_string)-1) && !strncmp(_s, _const_string "", sizeof(_const_string)-1))
+#define STREQ(_s, _const_string)                                        \
+  ((strlen(_s) == sizeof(_const_string)-1) &&                           \
+   !strncmp(_s, _const_string "", sizeof(_const_string)-1))
+#define STRSUFFIX(_s, _const_string)                                    \
+  ((strlen(_s) >= sizeof(_const_string)-1) &&                           \
+   !strncmp(_s + strlen(_s) - (sizeof(_const_string)-1), _const_string "", sizeof(_const_string)-1))
+#define STRPREFIX(_s, _const_string)                                    \
+  ((strlen(_s) >= sizeof(_const_string)-1) &&                           \
+   !strncmp(_s, _const_string "", sizeof(_const_string)-1))
 #define STRCMP(_s, _const_string) strncmp(_s, _const_string "", sizeof(_const_string)-1)
 #define STRCPY(_s, _const_string) (memcpy((void*)(_s), _const_string "", sizeof(_const_string)-1), sizeof(_const_string)-1)
 #define STRCPYZ(_s, _const_string) (memcpy((void*)(_s), (_const_string ""), sizeof(_const_string)), sizeof(_const_string))
