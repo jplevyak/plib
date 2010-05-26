@@ -248,7 +248,7 @@ static void *freer_main(void *data) {
     int i = 0;
     for (; i < freers.n; i++) {
       if (freers.v[i].t < now)
-        free(freers.v[i].p);
+        FREE(freers.v[i].p);
       else
         break;
     }

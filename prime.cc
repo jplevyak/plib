@@ -5,7 +5,7 @@
 
 #define PASSES 30
 
-uint32 modular_exponent(uint32 base, uint32 power, uint32 modulus) {
+static uint32 modular_exponent(uint32 base, uint32 power, uint32 modulus) {
   uint64 result = 1;
   for (int i = 31; i >= 0; i--) {
     result = (result*result) % modulus;
@@ -17,7 +17,7 @@ uint32 modular_exponent(uint32 base, uint32 power, uint32 modulus) {
 }
 
 // true: possibly prime
-bool miller_rabin_pass(uint32 a, uint32 n) {
+static bool miller_rabin_pass(uint32 a, uint32 n) {
   uint32 s = 0;
   uint32 d = n - 1;
   while ((d % 2) == 0) {
@@ -34,7 +34,7 @@ bool miller_rabin_pass(uint32 a, uint32 n) {
   return false;
 }
 
-static bool miller_rabin(uint32 n) {
+bool miller_rabin(uint32 n) {
   uint32 a = 0;
   for (int t = 0; t < PASSES; t++) {
     do {

@@ -64,7 +64,7 @@ void snap_stats(Stat **pstat, int *plen) {
     pthread_cond_wait(&stat_done_condition, &stat_mutex);
   }
   int l = sizeof(Stat) * nstats;
-  Stat *s = (Stat*)malloc(l);
+  Stat *s = (Stat*)MALLOC(l);
   memset(s, 0, l);
   form_Map(MapCCharInt::ME, x, stats)
     s[x->value-1].name = x->key;
