@@ -146,7 +146,9 @@ EXECUTABLES = $(EXECUTABLE_FILES)
 TEST_PLIB = test_plib
 endif
 
+ifndef TEST_EXEC
 TEST_EXEC = test_$(MODULE)
+endif
 
 ALL_SRCS = $(PLIB_SRCS) $(LIB_SRCS) $(TEST_PLIB_SRCS)
 
