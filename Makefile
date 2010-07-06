@@ -56,7 +56,7 @@ endif
 ifeq ($(OS_TYPE),CYGWIN)
 #GC_CFLAGS += -L/usr/local/lib
 else
-GC_CFLAGS += -I/usr/include/gc -I/usr/local/include 
+GC_CFLAGS += -I/usr/local/include 
 LIBS += -lrt -lpthread 
 endif
 
