@@ -4,9 +4,14 @@
 #ifndef _freelist_h
 #define _freelist_h
 
-#define _XOPEN_SOURCE 600
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef __APPLE__
+#define _XOPEN_SOURCE 600
+#else
+#include <malloc.h>
+#endif
 
 // alignment must be a power of 2 greater than 8
 
@@ -49,7 +54,7 @@ FreeList::init(int asize, int acount, int aalignment) {
 inline void 
 FreeList::xpand() {
   void *last = head;
-#ifdef _XOPEN_SOURCE == 600
+#if _XOPEN_SOURCE == 600
   if (posix_memalign(&head, alignment, (size*count) + sizeof(void*)))
     head = 0;
 #else
