@@ -4,6 +4,10 @@
 #ifndef _persist_H
 #define _persist_H
 
+#ifdef __APPLE__
+#define O_NOATIME 0
+#endif
+
 // #define MALLOC_MEMORY 1
 
 #ifndef MALLOC_MEMORY

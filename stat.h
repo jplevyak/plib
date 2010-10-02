@@ -25,9 +25,9 @@ static inline int process_stat_snap() { // call in event loop
 }
 void snap_stats(Stat **, int *);
 
-#define STAT(_s) __thread Stat _s
-#define STAT_SUM(_s, _v) do  { _s.sum += _v; _s.count++; } while (0)
-#define STAT_ADD(_s, _v) do  { _s.count += _v; } while (0)
+#define STAT(_s) DEF_TLS(Stat, _s)
+#define STAT_SUM(_s, _v) do  { TLS(_s).sum += _v; TLS(_s).count++; } while (0)
+#define STAT_ADD(_s, _v) do  { TLS(_s).count += _v; } while (0)
 #define STAT_INC(_s) STAT_ADD(_s, 1)
 #define STAT_DEC(_s) STAT_ADD(_s, -1)
 

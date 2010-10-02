@@ -8,6 +8,10 @@
 #ifdef linux
 # include <endian.h>    /* attempt to define endianness */
 #endif
+#ifdef __APPLE__
+#define __LITTLE_ENDIAN 1234
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
 
 /*
  *  * My best guess at if you are big-endian or little-endian.  This may

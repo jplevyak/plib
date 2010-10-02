@@ -23,6 +23,19 @@
 
 #define TIMER_NUM_ACCUMULATORS 10
 
+#ifdef __APPLE__
+#define CLOCK_REALTIME 0
+#define clock_gettime(_t, _tp) xclock_gettime(_tp)
+typedef int clockid_t;
+inline int xclock_gettime(struct timespec *tp) {
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  tp->tv_sec = tv.tv_sec;
+  tp->tv_nsec = tv.tv_usec * 1000;
+  return 0;
+}
+#endif
+
 class Timer {
  public:
   clockid_t type;

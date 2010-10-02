@@ -106,6 +106,7 @@ typedef const char *ccharptr_t;
 #include <errno.h>
 #include <float.h>
 
+#include "tls.h"
 #include "arg.h"
 #include "barrier.h"
 #include "config.h"
