@@ -24,7 +24,7 @@ template <class C, class A = DefaultAlloc, int S = VEC_INTEGRAL_SHIFT_DEFAULT>  
 class Vec : public gc {
  public:
   int           n;
-  int           i;      // size index for sets
+  int           i;      // size index for sets, reserve for vectors
   C             *v;
   C             e[VEC_INTEGRAL_SIZE];
   
@@ -33,7 +33,7 @@ class Vec : public gc {
   Vec<C,A,S>(const C c);
   ~Vec();
 
-  C &operator[](int i) { return v[i]; }
+  C &operator[](int i) const { return v[i]; }
 
   C get(int i);
   void add(C a);  
@@ -44,6 +44,7 @@ class Vec : public gc {
   void clear();
   void free();
   void free_and_clear();
+  void delete_and_clear();
   void set_clear();
   C *set_add(C a);
   void set_remove(C a); // expensive, use BlockHash for cheaper remove
@@ -78,11 +79,12 @@ class Vec : public gc {
   void insert(int index, C a);
   void push(C a) { insert(0, a); }
   void reverse();
-  C* end() { return v + n; }
-  C &first() { return v[0]; }
-  C &last() { return v[n-1]; }
+  void reserve(int free_and_clearn);
+  C* end() const { return v + n; }
+  C &first() const { return v[0]; }
+  C &last() const { return v[n-1]; }
   Vec<C,A,S>& operator=(Vec<C,A,S> &v) { this->copy(v); return *this; }
-  int length () { return n; }
+  int length () const { return n; }
   int write(int fd);
   int read(int fd);
   void qsort(bool (*lt)(C,C));
@@ -481,8 +483,8 @@ Vec<C,A,S>::set_count() {
 
 template <class C, class A, int S> void
 Vec<C,A,S>::set_to_vec() {
-  Vec<C,A,S> vv(*this);
-  clear();
+  Vec<C,A,S> vv;
+  vv.move(*this);
   for (C *c = vv.v; c < vv.v + vv.n; c++)
     if (*c)
       add(*c);
@@ -490,8 +492,8 @@ Vec<C,A,S>::set_to_vec() {
 
 template <class C, class A, int S> void
 Vec<C,A,S>::vec_to_set() {
-  Vec<C,A,S> vv(*this);
-  clear();
+  Vec<C,A,S> vv;
+  vv.move(*this);
   for (C *c = vv.v; c < vv.v + vv.n; c++)
     set_add(*c);
 }
@@ -548,6 +550,8 @@ Vec<C,A,S>::copy_internal(const Vec<C,A,S> &vv) {
   v = (C*)A::alloc(nl * sizeof(C));
   memcpy(v, vv.v, n * sizeof(C));
   memset(v + n, 0, (nl - n) * sizeof(C)); 
+  if (i > n)
+    i = 0;
 }
 
 template <class C, class A, int S> void
@@ -561,9 +565,25 @@ Vec<C,A,S>::set_expand() {
   memset(v, 0, n * sizeof(C));
 }
 
+template <class C, class A, int S> inline void
+Vec<C,A,S>::reserve(int x) {
+  if (x <= n)
+    return;
+  int xx = 1 << VEC_INITIAL_SHIFT;
+  while (xx < x) xx *= 2;
+  i = xx;
+  void *vv = (void*)v;
+  v = (C*)A::alloc(i * sizeof(C));
+  if (vv && n)
+    memcpy(v, vv, n * sizeof(C));
+  memset(&v[n], 0, (i-n) * sizeof(C));
+  if (vv && vv != e)
+    A::free(vv);
+}
+
 template <class C, class A, int S> inline void 
 Vec<C,A,S>::addx() {
-  if (!n) {
+  if (!v) {
     v = e;
     return;
   }
@@ -575,6 +595,10 @@ Vec<C,A,S>::addx() {
   } else {
     if ((n & (n-1)) == 0) {
       int nl = n * 2;
+      if (nl <= i)
+        return;
+      else
+        i = 0;
       void *vv = (void*)v;
       v = (C*)A::alloc(nl * sizeof(C));
       memcpy(v, vv, n * sizeof(C));
@@ -607,10 +631,15 @@ Vec<C,A,S>::free_and_clear() {
   for (int x = 0; x < n; x++)
     if (v[x])
       A::free(v[x]);
-  if (v && v != e) A::free(v);
-  v = NULL;
-  n = 0;
-  i = 0;
+  clear();
+}
+
+template <class C, class A, int S> inline void
+Vec<C,A,S>::delete_and_clear() {
+  for (int x = 0; x < n; x++)
+    if (v[x])
+      delete v[x];
+  clear();
 }
 
 template <class C, class A, int S> 

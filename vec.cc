@@ -207,6 +207,15 @@ test_vec() {
     if (vv.v[i])
       t += (int)(intptr_t)vv.v[i];
   assert(t == tt + 1000 * tt);
+
+  v.clear();
+  v.reserve(1000);
+  t = 0;
+  for (int i = 0; i < 1000; i++)
+    v.add((void*)(intptr_t)i);
+  for (int i = 0; i < 1000; i++)
+    t += (int)(intptr_t)v.v[i];
+  assert(t == 999 * 500);
   
   Intervals in;
   in.insert(1);
@@ -241,6 +250,6 @@ test_vec() {
   uf.unify(1,2);
   assert(uf.find(0) == uf.find(3));
   assert(uf.find(1) == uf.find(3));
-  printf("vec.cc test\tPASSED\n");
+  printf("vec test\tPASSED\n");
 }
 #endif
