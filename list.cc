@@ -9,14 +9,14 @@
 class A {
  public:
   int a;
-  SLink<A> link;
+  SLINK(A, link);
   A(int aa) : a(aa) {}
 };
 
 class B {
  public:
   int b;
-  Link<B> link;
+  LINK(B, link);
   B(int bb) : b(bb) {}
 };
 
@@ -62,6 +62,7 @@ test_list() {
     t += q.dequeue()->b;
   assert(t == tt);
   assert(q.head == NULL);
+  printf("list test\tPASSED\n");
 }
 #endif
 

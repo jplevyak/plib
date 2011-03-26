@@ -241,5 +241,6 @@ test_vec() {
   uf.unify(1,2);
   assert(uf.find(0) == uf.find(3));
   assert(uf.find(1) == uf.find(3));
+  printf("vec.cc test\tPASSED\n");
 }
 #endif

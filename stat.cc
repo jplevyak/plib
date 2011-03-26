@@ -152,6 +152,7 @@ void *stat_pthread(void *) {
   return 0;
 }
 
+#ifdef TEST_LIB
 void test_stat() {
   init_stat();
   init_stat_thread();
@@ -190,4 +191,6 @@ void test_stat() {
   assert(allstats[TLS(test_stat_stat).id].count == 8);
   assert(allstats[test_gstat_stat.id].sum == 5);
   assert(allstats[test_gstat_stat.id].count == 8);
+  printf("stat test\tPASSED\n");
 }
+#endif

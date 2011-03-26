@@ -88,11 +88,11 @@ endif
 ifdef USE_EDITLINE
 ifeq ($(OS_TYPE),Linux)
   CFLAGS += -DUSE_EDITLINE
-  LIBS += -leditline -ltermcap
+  LIBS += -ledit -ltermcap
 endif
 ifeq ($(OS_TYPE),CYGWIN)
   CFLAGS += -DUSE_EDITLINE
-  LIBS += -leditline -ltermcap
+  LIBS += -ledit -ltermcap
 endif
 endif
 
@@ -169,8 +169,8 @@ version.o: version.cc
 $(LIBRARY):  $(LIB_OBJS)
 	ar $(AR_FLAGS) $@ $^
 
-$(TEST_PLIB): $(TEST_PLIB_OBJS) $(LIB_OBJS) $(LIBRARIES)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+$(TEST_PLIB): $(TEST_PLIB_OBJS) $(LIB_SRCS) $(LIBRARIES)
+	$(CC) $(CFLAGS) -DTEST_LIB=1 $(TEST_PLIB_OBJS) $(LDFLAGS) $(LIB_SRCS) -o $@ $(LIBS)
 
 LICENSE.i: LICENSE
 	rm -f LICENSE.i

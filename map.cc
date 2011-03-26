@@ -7,8 +7,8 @@
 
 void
 test_map() {
-  typedef Map<char *, char *> SSMap;
-  typedef MapElem<char *, char *> SSMapElem;
+  typedef Map<cchar *, cchar *> SSMap;
+  typedef MapElem<cchar *, cchar *> SSMapElem;
 #define form_SSMap(_p, _v) form_Map(SSMapElem, _p, _v)
   SSMap ssm;
   ssm.put("a", "A");
@@ -17,8 +17,8 @@ test_map() {
   ssm.put("d", "D");
   form_SSMap(x, ssm) ;
 
-  StringChainHash h;
-  char *hi = "hi", *ho = "ho", *hum = "hum", *hhi = "hhi";
+  StringChainHash<> h;
+  cchar *hi = "hi", *ho = "ho", *hum = "hum", *hhi = "hhi";
   hhi++;
   h.put(hi);
   h.put(ho);
@@ -40,7 +40,7 @@ test_map() {
   assert(hh.get(hhi) == 0);
   assert(hh.get(hi) == 0);
 
-  HashMap<char *, StringHashFns, int> sh;
+  HashMap<cchar *, StringHashFns, int> sh;
   sh.put(hi, 1);
   sh.put(ho, 2);
   sh.put(hum, 3);
@@ -60,7 +60,7 @@ test_map() {
   assert(sh.get("af") == 10);
   assert(sh.get("ac") == 7);
 
-  ChainHashMap<char *, StringHashFns, int> ssh;
+  ChainHashMap<cchar *, StringHashFns, int> ssh;
   ssh.put(hi, 1);
   ssh.put(ho, 2);
   ssh.put(hum, 3);
@@ -85,9 +85,10 @@ test_map() {
   Vec<int> ints;
   ssh.get_values(ints);
   assert(ints.n == 8);
-  Vec<char *> chars;
+  Vec<cchar *> chars;
   ssh.get_keys(chars);
   assert(chars.n == 8);
+  printf("map test\tPASSED\n");
 }
 #endif
 

@@ -522,7 +522,7 @@ ChainHash<C, AHashFns, A>::del(C c) {
   else
     return 0;
   ConsCell<C> *last = 0;
-  forc_List(C, x, *l) {
+  forc_List(ConsCell<C>, x, *l) {
     if (AHashFns::equal(c, x->car)) {
       if (!last)
         l->head = x->cdr;
