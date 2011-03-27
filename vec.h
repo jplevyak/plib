@@ -79,7 +79,7 @@ class Vec : public gc {
   void insert(int index, C a);
   void push(C a) { insert(0, a); }
   void reverse();
-  void reserve(int free_and_clearn);
+  void reserve(int n);
   C* end() const { return v + n; }
   C &first() const { return v[0]; }
   C &last() const { return v[n-1]; }
@@ -483,11 +483,19 @@ Vec<C,A,S>::set_count() {
 
 template <class C, class A, int S> void
 Vec<C,A,S>::set_to_vec() {
-  Vec<C,A,S> vv;
-  vv.move(*this);
-  for (C *c = vv.v; c < vv.v + vv.n; c++)
-    if (*c)
-      add(*c);
+  C *x = &v[0], *y = x;
+  for (; y < v + n; y++) {
+    if (*y) {
+      if (x != y)
+         *x = *y; 
+       x++;
+    }
+  }
+  int nn = x - v;
+  if (n - nn)
+    memset(&v[nn], 0, (n - nn) * (sizeof(C)));
+  n = nn;
+  i = prime2[i];  // convert set allocation to reserve
 }
 
 template <class C, class A, int S> void
@@ -550,7 +558,7 @@ Vec<C,A,S>::copy_internal(const Vec<C,A,S> &vv) {
   v = (C*)A::alloc(nl * sizeof(C));
   memcpy(v, vv.v, n * sizeof(C));
   memset(v + n, 0, (nl - n) * sizeof(C)); 
-  if (i > n)
+  if (i > n) // reset reserve
     i = 0;
 }
 
