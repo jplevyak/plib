@@ -214,8 +214,8 @@ Vec<C,A,S>::set_add(C a) {
     return &v[n-1];
   }
   if (n == SET_LINEAR_SIZE) {
-    Vec<C,A,S> vv(*this);
-    clear();
+    Vec<C,A,S> vv;
+    vv.move(*this);
     for (C *c = vv.v; c < vv.v + vv.n; c++)
       set_add_internal(*c);
   }
@@ -491,11 +491,16 @@ Vec<C,A,S>::set_to_vec() {
        x++;
     }
   }
-  int nn = x - v;
-  if (n - nn)
-    memset(&v[nn], 0, (n - nn) * (sizeof(C)));
-  n = nn;
-  i = prime2[i];  // convert set allocation to reserve
+  n = x - v;
+  if (i) {
+    i = prime2[i];  // convert set allocation to reserve
+    if (i - n > 0)
+      memset(&v[n], 0, (i - n) * (sizeof(C)));
+  } else {
+    i = 0;
+    if (v == &e[0] && VEC_INTEGRAL_SIZE - n > 0)
+      memset(&v[n], 0, (VEC_INTEGRAL_SIZE - n) * (sizeof(C)));
+  }
 }
 
 template <class C, class A, int S> void
