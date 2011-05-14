@@ -6,6 +6,7 @@
 #define prime_H
 
 uint32 next_higher_prime(uint32 i);
+uint32 next_lower_prime(uint32 i);
 bool miller_rabin(uint32 n);
 
 #endif

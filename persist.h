@@ -64,7 +64,10 @@ static inline void *map_file_ro(cchar *fn, uint64 n = 0, int *pfd = 0, uint64 *p
     perror("open");
   }
   assert(fd > 0);
-  if (!n) n = (uint64)lseek(fd, 0, SEEK_END);
+  if (!n) {
+    n = (uint64)::lseek(fd, 0, SEEK_END);
+    ::lseek(fd, 0, SEEK_SET);
+  }
   void *m = 0;
   if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
     perror("mmap");
@@ -81,7 +84,10 @@ static inline void *map_file_ro_atime(cchar *fn, uint64 n = 0, int *pfd = 0, uin
     perror("open");
   }
   assert(fd > 0);
-  if (!n) n = (uint64)lseek(fd, 0, SEEK_END);
+  if (!n) {
+    n = (uint64)::lseek(fd, 0, SEEK_END);
+    ::lseek(fd, 0, SEEK_SET);
+  }
   void *m = 0;
   if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
     perror("mmap");
@@ -91,7 +97,10 @@ static inline void *map_file_ro_atime(cchar *fn, uint64 n = 0, int *pfd = 0, uin
 }
 
 static inline void *map_file_ro(int fd, uint64 n = 0) {
-  if (!n) n = (uint64)lseek(fd, 0, SEEK_END);
+  if (!n) {
+    n = (uint64)::lseek(fd, 0, SEEK_END);
+    ::lseek(fd, 0, SEEK_SET);
+  }
   void *m = 0;
   if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
     perror("mmap");
@@ -103,9 +112,31 @@ static inline void *read_file(cchar *fn, uint64 n = 0, int *pfd = 0) {
   if (fd < 0)
     fprintf(stderr, "unable to open: %s\n", fn);
   assert(fd > 0);
-  if (!n) n = (uint64)lseek(fd, 0, SEEK_END);
+  if (!n) {
+    n = (uint64)::lseek(fd, 0, SEEK_END);
+    ::lseek(fd, 0, SEEK_SET);
+  }
   void *m = MALLOC(n);
-  if (read(fd, m, n) != (ssize_t)n)
+  size_t nn = ::read(fd, m, n);
+  if (nn != (ssize_t)n)
+    perror("read");
+  if (pfd) *pfd = fd;
+  return m;
+}
+
+static inline char *read_file_to_string(cchar *fn, uint64 n = 0, int *pfd = 0) {
+  int fd = open(fn, O_RDONLY|O_NOATIME, 00660);
+  if (fd < 0)
+    fprintf(stderr, "unable to open: %s\n", fn);
+  assert(fd > 0);
+  if (!n) {
+    n = (uint64)::lseek(fd, 0, SEEK_END);
+    ::lseek(fd, 0, SEEK_SET);
+  }
+  char *m = (char*)MALLOC(n+1);
+  m[n] = 0; 
+  size_t nn = ::read(fd, m, n);
+  if (nn != (ssize_t)n)
     perror("read");
   if (pfd) *pfd = fd;
   return m;

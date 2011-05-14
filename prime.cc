@@ -54,3 +54,12 @@ uint32 next_higher_prime(uint32 n) {
     n+=2;
   }
 }
+
+uint32 next_lower_prime(uint32 n) {
+  if (!(n&1)) n--;
+  while (1) {
+    if (miller_rabin(n))
+      return n;
+    n -= 2;
+  }
+}
