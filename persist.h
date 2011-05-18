@@ -117,7 +117,7 @@ static inline void *read_file(cchar *fn, uint64 n = 0, int *pfd = 0) {
     ::lseek(fd, 0, SEEK_SET);
   }
   void *m = MALLOC(n);
-  size_t nn = ::read(fd, m, n);
+  ssize_t nn = ::read(fd, m, n);
   if (nn != (ssize_t)n)
     perror("read");
   if (pfd) *pfd = fd;
@@ -135,7 +135,7 @@ static inline char *read_file_to_string(cchar *fn, uint64 n = 0, int *pfd = 0) {
   }
   char *m = (char*)MALLOC(n+1);
   m[n] = 0; 
-  size_t nn = ::read(fd, m, n);
+  ssize_t nn = ::read(fd, m, n);
   if (nn != (ssize_t)n)
     perror("read");
   if (pfd) *pfd = fd;

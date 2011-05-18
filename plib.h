@@ -24,9 +24,9 @@
 #define MEMALIGN(_p,_n,_a) _p = GC_MALLOC(_n)
 #define FREE(_x) (void)(_x)
 #define DELETE(_x) (void)(_x)
-#define malloc dont_use_malloc
-#define realloc dont_use_realloc
-#define free dont_use_free
+//#define malloc dont_use_malloc
+//#define realloc dont_use_realloc
+//#define free dont_use_free
 //#define delete dont_use_delete
 #else
 #define MEM_INIT() 
@@ -78,7 +78,9 @@ typedef const char *ccharptr_t;
 #define RND64() genrand64_int64()
 #define RNDD() genrand64_real1()
 
+#ifndef __STDC_LIMIT_MACROS 1
 #define __STDC_LIMIT_MACROS 1
+#endif
 
 #include <assert.h>
 #include <stdarg.h>
