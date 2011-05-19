@@ -78,7 +78,7 @@ typedef const char *ccharptr_t;
 #define RND64() genrand64_int64()
 #define RNDD() genrand64_real1()
 
-#ifndef __STDC_LIMIT_MACROS 1
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS 1
 #endif
 
