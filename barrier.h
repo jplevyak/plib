@@ -17,6 +17,7 @@ struct barrier_t {
 extern int barrier_init(barrier_t *barrier, int count);
 extern int barrier_destroy(barrier_t *barrier);
 extern int barrier_signal(barrier_t *barrier);  // worker signals
-extern int barrier_wait(barrier_t *barrier);    // master waits
+extern int barrier_wait(barrier_t *barrier);  // master waits
+extern int barrier_signal_and_wait(barrier_t *barrier);  // cooperative barrier
 
 #endif

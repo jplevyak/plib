@@ -1,4 +1,5 @@
-#include "plib.h"
+#include <errno.h>
+#include "barrier.h"
 
 int 
 barrier_init(barrier_t *barrier, int count) {
@@ -37,10 +38,11 @@ barrier_signal(barrier_t *barrier) {
   if ((ret = pthread_mutex_lock(&barrier->mutex)))
     return ret;
   barrier->counter--;
-  if ((ret = pthread_cond_signal(&barrier->cond)) != 0) {
-    pthread_mutex_unlock(&barrier->mutex);
-    return ret;
-  }
+  if (barrier->counter == 0)
+    if ((ret = pthread_cond_broadcast(&barrier->cond)) != 0) {
+      pthread_mutex_unlock(&barrier->mutex);
+      return ret;
+    }
   if ((ret = pthread_mutex_unlock(&barrier->mutex)) != 0)
     return ret;
   return ret;
@@ -54,6 +56,26 @@ barrier_wait(barrier_t *barrier) {
   while (barrier->counter)
     if ((ret = pthread_cond_wait(&barrier->cond, &barrier->mutex)) != 0)
       break;
-  pthread_mutex_unlock(&barrier->mutex);
+  if ((ret = pthread_mutex_unlock(&barrier->mutex)) != 0)
+    return ret;
+  return ret;
+}
+
+int
+barrier_signal_and_wait(barrier_t *barrier) {
+  int ret = 0;
+  if ((ret = pthread_mutex_lock(&barrier->mutex)))
+    return ret;
+  barrier->counter--;
+  if (barrier->counter == 0)
+    if ((ret = pthread_cond_broadcast(&barrier->cond)) != 0) {
+      pthread_mutex_unlock(&barrier->mutex);
+      return ret;
+    }
+  while (barrier->counter)
+    if ((ret = pthread_cond_wait(&barrier->cond, &barrier->mutex)) != 0)
+      break;
+  if ((ret = pthread_mutex_unlock(&barrier->mutex)) != 0)
+    return ret;
   return ret;
 }
