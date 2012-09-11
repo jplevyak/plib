@@ -216,7 +216,7 @@ template <class K, class C, class A = DefaultAlloc> class Env : public gc {
 template <class K, class C, class A> inline C 
 Map<K,C,A>::get(K akey) {
   MapElem<K,C> e(akey, (C)0);
-  MapElem<K,C> *x = set_in(e);
+  MapElem<K,C> *x = this->set_in(e);
   if (x)
     return x->value;
   return (C)0;
@@ -225,7 +225,7 @@ Map<K,C,A>::get(K akey) {
 template <class K, class C, class A> inline C *
 Map<K,C,A>::getp(K akey) {
   MapElem<K,C> e(akey, (C)0);
-  MapElem<K,C> *x = set_in(e);
+  MapElem<K,C> *x = this->set_in(e);
   if (x)
     return &x->value;
   return 0;
@@ -234,22 +234,22 @@ Map<K,C,A>::getp(K akey) {
 template <class K, class C, class A> inline MapElem<K,C> *
 Map<K,C,A>::put(K akey, C avalue) {
   MapElem<K,C> e(akey, avalue);
-  MapElem<K,C> *x = set_in(e);
+  MapElem<K,C> *x = this->set_in(e);
   if (x) {
     x->value = avalue;
     return x;
   } else
-    return set_add(e);
+    return this->set_add(e);
 }
 
 template <class K, class C, class A> inline MapElem<K,C> *
 Map<K,C,A>::put(K akey) {
   MapElem<K,C> e(akey, 0);
-  MapElem<K,C> *x = set_in(e);
+  MapElem<K,C> *x = this->set_in(e);
   if (x)
     return x;
   else
-    return set_add(e);
+    return this->set_add(e);
 }
 
 template <class K, class C, class A> inline void
@@ -442,7 +442,7 @@ ChainHash<C, AHashFns, A>::put(C c) {
   uintptr_t h = AHashFns::hash(c);
   List<C,A> *l;
   MapElem<uintptr_t,List<C,A> > e(h, (C)0);
-  MapElem<uintptr_t,List<C,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<C,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else {
@@ -461,7 +461,7 @@ ChainHash<C, AHashFns, A>::get(C c) {
   uintptr_t h = AHashFns::hash(c);
   List<C> empty;
   MapElem<uintptr_t,List<C,A> > e(h, empty);
-  MapElem<uintptr_t,List<C,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<C,A> > *x = this->set_in(e);
   if (!x)
     return 0;
   List<C> *l = &x->value;
@@ -476,7 +476,7 @@ ChainHash<C, AHashFns, A>::put_bag(C c) {
   uintptr_t h = AHashFns::hash(c);
   List<C, A> *l;
   MapElem<uintptr_t,List<C,A> > e(h, (C)0);
-  MapElem<uintptr_t,List<C,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<C,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else {
@@ -492,7 +492,7 @@ ChainHash<C, AHashFns, A>::get_bag(C c, Vec<C> &v) {
   uintptr_t h = AHashFns::hash(c);
   List<C,A> empty;
   MapElem<uintptr_t,List<C,A> > e(h, empty);
-  MapElem<uintptr_t,List<C,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<C,A> > *x = this->set_in(e);
   if (!x)
     return 0;
   List<C,A> *l = &x->value;
@@ -516,7 +516,7 @@ ChainHash<C, AHashFns, A>::del(C c) {
   uintptr_t h = AHashFns::hash(c);
   List<C> *l;
   MapElem<uintptr_t,List<C,A> > e(h, (C)0);
-  MapElem<uintptr_t,List<C,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<C,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else
@@ -543,7 +543,7 @@ ChainHashMap<K, AHashFns, C, A>::put(K akey, C avalue) {
   List<MapElem<K,C>,A> *l;
   MapElem<K, C> c(akey, avalue);
   MapElem<uintptr_t,List<MapElem<K,C>,A> > e(h, empty);
-  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else {
@@ -564,7 +564,7 @@ ChainHashMap<K, AHashFns, C, A>::get(K akey) {
   uintptr_t h = AHashFns::hash(akey);
   List<MapElem<K,C>, A> empty;
   MapElem<uintptr_t,List<MapElem<K,C>,A> > e(h, empty);
-  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = this->set_in(e);
   if (!x)
     return 0;
   List<MapElem<K,C>,A> *l = &x->value;
@@ -582,7 +582,7 @@ ChainHashMap<K, AHashFns, C, A>::put_bag(K akey, C avalue) {
   List<MapElem<K,C>,A> *l;
   MapElem<K, C> c(akey, avalue);
   MapElem<uintptr_t,List<MapElem<K,C>,A> > e(h, empty);
-  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else {
@@ -601,7 +601,7 @@ ChainHashMap<K, AHashFns, C, A>::get_bag(K akey, Vec<C> &v) {
   uintptr_t h = AHashFns::hash(akey);
   List<MapElem<K,C>,A> empty;
   MapElem<uintptr_t,List<MapElem<K,C>,A> > e(h, empty);
-  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = this->set_in(e);
   if (!x)
     return 0;
   List<MapElem<K,C>,A> *l = &x->value;
@@ -617,7 +617,7 @@ ChainHashMap<K, AHashFns, C, A>::del(K akey) {
   List<MapElem<K,C>,A> empty;
   List<MapElem<K,C>,A> *l;
   MapElem<uintptr_t,List<MapElem<K,C>,A> > e(h, empty);
-  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = set_in(e);
+  MapElem<uintptr_t,List<MapElem<K,C>,A> > *x = this->set_in(e);
   if (x)
     l = &x->value;
   else
@@ -666,7 +666,7 @@ StringChainHash<F,A>::canonicalize(cchar *s, cchar *e) {
   else
     while (*a) h = h * 27 + (unsigned char)*a++;  
   MapElem<uintptr_t,List<cchar*, A> > me(h, (char*)0);
-  MapElem<uintptr_t,List<cchar*, A> > *x = set_in(me);
+  MapElem<uintptr_t,List<cchar*, A> > *x = this->set_in(me);
   if (x) {
     List<cchar*, A> *l = &x->value;
     typedef ConsCell<cchar *, A> TT;

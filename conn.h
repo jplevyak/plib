@@ -55,13 +55,13 @@ class Conn : public ThreadPoolJob { public:
   int get_some();
 
   int append_to_buf(buffer_t &b, cchar *s) { b.end = (byte*)scpy((char *)b.end, s); assert(b.end <= b.bufend); return 0; }
-  int append_to_buf_n(buffer_t &b, byte *s, int n) { 
+  int append_to_buf_n(buffer_t &b, const byte *s, int n) { 
     memcpy(b.end, s, n); b.end += n; assert(b.end <= b.bufend); return 0; 
   }
   int append_string(cchar *str) { append_to_buf(wbuf, str); return 0; }
-  int append_string(cchar *str, int len) { append_to_buf_n(wbuf, (byte*)str, len); return 0; }
-  int append_string(cchar *str, cchar *end) { append_to_buf_n(wbuf, (byte*)str, end - str); return 0; }
-  int append_bytes(void *b, int len) { append_to_buf_n(wbuf, (byte*)b, len); return 0; }
+  int append_string(cchar *str, int len) { append_to_buf_n(wbuf, (const byte*)str, len); return 0; }
+  int append_string(cchar *str, cchar *end) { append_to_buf_n(wbuf, (const byte*)str, end - str); return 0; }
+  int append_bytes(void *b, int len) { append_to_buf_n(wbuf, (const byte*)b, len); return 0; }
   int append_str(cchar *str) { return append_string(str, str_len(str)); }
   int append_print(cchar *str, ...);
 

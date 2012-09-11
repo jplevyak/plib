@@ -240,8 +240,8 @@ Queue<C,L>::append(Queue<C,L> &q) {
     tail = q.tail;
   } else {
     if (q.head) {
-      next(tail) = q.head;
-      prev(q.head) = tail;
+      this->next(tail) = q.head;
+      this->prev(q.head) = tail;
       tail = q.tail;
     }
   }
