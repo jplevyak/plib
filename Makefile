@@ -1,10 +1,10 @@
 # Makefile for PLIB
-# Copyright (C) 2004-2010 John Plevyak, All Rights Reserved
+# Copyright (C) 2004-2012 John Plevyak, All Rights Reserved
 
 ifndef USE_PLIB
 MODULE=plib
-DEBUG=1
-#OPTIMIZE=1
+#DEBUG=1
+OPTIMIZE=1
 #PROFILE=1
 USE_GC=1
 #LEAK_DETECT=1
@@ -96,12 +96,9 @@ ifeq ($(OS_TYPE),CYGWIN)
 endif
 endif
 
-BUILD_VERSION = $(shell svnversion .)
-ifeq ($(BUILD_VERSION),exported)
-  BUILD_VERSION = $(shell git show-ref 2> /dev/null | head -1 | cut -d ' ' -f 1)
-  ifeq ($(BUILD_VERSION),)
-    BUILD_VERSION = $(shell cat BUILD_VERSION)
-  endif
+BUILD_VERSION = $(shell git show-ref 2> /dev/null | head -1 | cut -d ' ' -f 1)
+ifeq ($(BUILD_VERSION),)
+  BUILD_VERSION = $(shell cat BUILD_VERSION)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
