@@ -3,8 +3,8 @@
 
 ifndef USE_PLIB
 MODULE=plib
-#DEBUG=1
-OPTIMIZE=1
+DEBUG=1
+#OPTIMIZE=1
 #PROFILE=1
 USE_GC=1
 #LEAK_DETECT=1
@@ -60,6 +60,7 @@ ifeq ($(OS_TYPE),CYGWIN)
 #GC_CFLAGS += -L/usr/local/lib
 else
 ifeq ($(OS_TYPE),Darwin)
+GC_CFLAGS += -I/usr/local/include
 else
 GC_CFLAGS += -I/usr/local/include 
 LIBS += -lrt -lpthread 

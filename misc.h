@@ -15,7 +15,7 @@ void fail(cchar *str, ...);
 void error(cchar *fmt, ...);
 char *trim(char *s, char *e = 0);
 bool str2bool(char *s);
-int str2strVec(char *s, Vec<char *> &v, char *delimitor = ",");
+int str2strVec(char *s, Vec<char *> &v, const char *delimitor = ",");
 int xmkdir(cchar *p, mode_t mode);
 int expand_filename(char *p, int len);
 

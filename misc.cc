@@ -77,7 +77,7 @@ bool str2bool(char *s) {
   return false;
 }
 
-int str2strVec(char *s, Vec<char *> &v, char *delimitor) {
+int str2strVec(char *s, Vec<char *> &v, const char *delimitor) {
   v.clear();
   char *x = s;
   int l = strlen(delimitor);
