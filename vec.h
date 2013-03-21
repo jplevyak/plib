@@ -1,5 +1,5 @@
 /* -*-Mode: c++;-*-
-   Copyright (c) 2003-2009 John Plevyak, All Rights Reserved
+   Copyright (c) 2003-2013 John Plevyak, All Rights Reserved
 */
 
 #ifndef _vec_H_
@@ -23,6 +23,7 @@
 template <class C, class A = DefaultAlloc, int S = VEC_INTEGRAL_SHIFT_DEFAULT>  // S must be a power of 2
 class Vec : public gc {
  public:
+  enum AsSet { AS_SET };
   int           n;
   int           i;      // size index for sets, reserve for vectors
   C             *v;
@@ -30,6 +31,7 @@ class Vec : public gc {
   
   Vec();
   Vec<C,A,S>(const Vec<C,A,S> &vv);
+  Vec<C,A,S>(const Vec<C,A,S> &vv, AsSet as_set);
   Vec<C,A,S>(const C c);
   ~Vec();
 
@@ -84,6 +86,8 @@ class Vec : public gc {
   C &first() const { return v[0]; }
   C &last() const { return v[n-1]; }
   Vec<C,A,S>& operator=(Vec<C,A,S> &v) { this->copy(v); return *this; }
+  bool is_vec() const { return !i || i >= n; }
+  bool is_set() const { return !is_vec(); }
   int length () const { return n; }
   int write(int fd);
   int read(int fd);
@@ -146,14 +150,17 @@ Vec<C,A,S>::Vec() : n(0), i(0), v(0) {
 }
 
 template <class C, class A, int S> inline
-Vec<C,A,S>::Vec(const Vec<C,A,S> &vv) {
+Vec<C,A,S>::Vec(const Vec<C,A,S> &vv) : n(0), i(0), v(0) {
   copy(vv);
 }
 
 template <class C, class A, int S> inline
-Vec<C,A,S>::Vec(C c) {
-  n = 1;
-  i = 0;
+Vec<C,A,S>::Vec(const Vec<C,A,S> &vv, Vec<C,A,S>::AsSet) : n(0), i(0), v(0) {
+  set_union(vv);
+}
+
+template <class C, class A, int S> inline
+Vec<C,A,S>::Vec(C c) : n(1), i(0) {
   v = &e[0];
   e[0] = c;
 }
@@ -300,16 +307,21 @@ Vec<C,A,S>::move(Vec<C,A,S> &vv)  {
 
 template <class C, class A, int S> inline void 
 Vec<C,A,S>::copy(const Vec<C,A,S> &vv)  {
-  n = vv.n;
-  i = vv.i;
   if (vv.v == &vv.e[0]) { 
-    memcpy(e, &vv.e[0], sizeof(e));
+    free();
+    n = vv.n;
+    i = vv.i;
     v = e;
+    memcpy(e, &vv.e[0], sizeof(e));
   } else {
     if (vv.v) 
       copy_internal(vv);
-    else
+    else {
+      free();
+      n = vv.n;
+      i = vv.i;
       v = 0;
+    }
   }
 }
 
@@ -493,7 +505,7 @@ Vec<C,A,S>::set_to_vec() {
   }
   n = x - v;
   if (i) {
-    i = prime2[i];  // convert set allocation to reserve
+    i = 2 << i;  // convert set allocation to reserve
     if (i - n > 0)
       memset(&v[n], 0, (i - n) * (sizeof(C)));
   } else {
@@ -556,15 +568,30 @@ Vec<C,A,S>::reverse() {
 
 template <class C, class A, int S> void
 Vec<C,A,S>::copy_internal(const Vec<C,A,S> &vv) {
+  if (i == vv.i && n == vv.n) {
+    memcpy(v, vv.v, n * sizeof(C));
+    return;
+  }
+  free();
+  if (vv.is_set()) {
+    i = vv.i;
+    n = vv.n;
+    int nn = 2 << i;
+    v = (C*)A::alloc(nn * sizeof(C));
+    memcpy(v, vv.v, n * sizeof(C));
+    memset(v + n, 0, (nn - n) * sizeof(C)); 
+    return;
+  }
+  // is_vec()
+  n = vv.n;
+  i = 0; // no reserve
   int l = n, nl = (1 + VEC_INITIAL_SHIFT);
   l = l >> VEC_INITIAL_SHIFT;
   while (l) { l = l >> 1; nl++; }
   nl = 1 << nl;
   v = (C*)A::alloc(nl * sizeof(C));
   memcpy(v, vv.v, n * sizeof(C));
-  memset(v + n, 0, (nl - n) * sizeof(C)); 
-  if (i > n) // reset reserve
-    i = 0;
+  memset(v + n, 0, (nl - vv.n) * sizeof(C)); 
 }
 
 template <class C, class A, int S> void
@@ -574,7 +601,8 @@ Vec<C,A,S>::set_expand() {
   else
     i = i + 1;
   n = prime2[i];
-  v = (C*)A::alloc(n * sizeof(C));
+  // allocate power of 2 so the fast path in add() will work after set_to_vec()
+  v = (C*)A::alloc((2 << i) * sizeof(C));
   memset(v, 0, n * sizeof(C));
 }
 
@@ -635,7 +663,7 @@ Vec<C,A,S>::reset() {
 
 template <class C, class A, int S> inline void
 Vec<C,A,S>::clear() {
-  if (v && v != e) A::free(v);
+  free();
   reset();
 }
 
@@ -657,7 +685,7 @@ Vec<C,A,S>::delete_and_clear() {
 
 template <class C, class A, int S> 
 inline Vec<C,A,S>::~Vec() { 
-  if (v && v != e) A::free(v); 
+  free();
 }
 
 template <class C, class A, int S> 

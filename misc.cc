@@ -183,7 +183,7 @@ char *quote_string(cchar *s) {
 
 // could be faster
 char *dupstrs(cchar *p1, cchar *p2, cchar *p3, cchar *p4) {
-  int l = 1 + strlen(p1) + (p2 ? strlen(p2) : 0) + (p3 ? strlen(p3) : 0 + (p4 ? strlen(p4) : 0));
+  int l = 1 + strlen(p1) + (p2 ? strlen(p2) : 0) + (p3 ? strlen(p3) : 0) + (p4 ? strlen(p4) : 0);
   char *s = (char*)MALLOC(l);
   strcpy(s, p1);
   if (p2) strcat(s, p2);

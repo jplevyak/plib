@@ -106,7 +106,7 @@ VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSI
 CFLAGS += -Wall
 # debug flags
 ifdef DEBUG
-CFLAGS += -ggdb3 -DDEBUG=1
+CFLAGS += -g -DDEBUG=1
 endif
 # optimized flags
 ifdef OPTIMIZE
@@ -155,6 +155,7 @@ TEST_EXEC = test_$(MODULE)
 endif
 
 ALL_SRCS = $(PLIB_SRCS) $(LIB_SRCS) $(TEST_PLIB_SRCS)
+DEPEND_SRCS = $(ALL_SRCS)
 
 allplib: $(EXECUTABLES) $(LIBRARY)
 
@@ -195,7 +196,7 @@ realclean: clean
 	\rm -f *.a *.orig *.rej svn-commit.tmp
 
 depend:
-	./mkdep $(CFLAGS) $(ALL_SRCS)
+	./mkdep $(CFLAGS) $(DEPEND_SRCS)
 
 plib.o: LICENSE.i COPYRIGHT.i
 
@@ -245,10 +246,7 @@ threadpool.o: threadpool.cc plib.h tls.h arg.h barrier.h config.h stat.h \
   dlmalloc.h freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h \
   misc.h util.h conn.h md5.h mt64.h hash.h persist.h prime.h service.h \
   timer.h unit.h
-barrier.o: barrier.cc plib.h tls.h arg.h barrier.h config.h stat.h \
-  dlmalloc.h freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h \
-  misc.h util.h conn.h md5.h mt64.h hash.h persist.h prime.h service.h \
-  timer.h unit.h
+barrier.o: barrier.cc barrier.h
 prime.o: prime.cc plib.h tls.h arg.h barrier.h config.h stat.h dlmalloc.h \
   freelist.h defalloc.h list.h log.h vec.h map.h threadpool.h misc.h \
   util.h conn.h md5.h mt64.h hash.h persist.h prime.h service.h timer.h \
