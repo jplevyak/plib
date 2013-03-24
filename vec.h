@@ -23,7 +23,7 @@
 template <class C, class A = DefaultAlloc, int S = VEC_INTEGRAL_SHIFT_DEFAULT>  // S must be a power of 2
 class Vec : public gc {
  public:
-  enum AsSet { AS_SET };
+  enum InitType { SET, MOVE };
   int           n;
   int           i;      // size index for sets, reserve for vectors
   C             *v;
@@ -31,7 +31,7 @@ class Vec : public gc {
   
   Vec();
   Vec<C,A,S>(const Vec<C,A,S> &vv);
-  Vec<C,A,S>(const Vec<C,A,S> &vv, AsSet as_set);
+  Vec<C,A,S>(Vec<C,A,S> &vv, InitType init_type);
   Vec<C,A,S>(const C c);
   ~Vec();
 
@@ -155,8 +155,11 @@ Vec<C,A,S>::Vec(const Vec<C,A,S> &vv) : n(0), i(0), v(0) {
 }
 
 template <class C, class A, int S> inline
-Vec<C,A,S>::Vec(const Vec<C,A,S> &vv, Vec<C,A,S>::AsSet) : n(0), i(0), v(0) {
-  set_union(vv);
+Vec<C,A,S>::Vec(Vec<C,A,S> &vv, Vec<C,A,S>::InitType init_type) : n(0), i(0), v(0) {
+  if (init_type == SET)
+    set_union(vv);
+  else
+    move(vv);
 }
 
 template <class C, class A, int S> inline
