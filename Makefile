@@ -189,7 +189,7 @@ bintar:
 	(cd ..;tar czf $(MODULE)-$(RELEASE)-$(OS_TYPE)-bin.tar.gz $(AUX_FILES) $(LIBRARY:%=$(MODULE)/%) $(INCLUDES:%=$(MODULE)/%) $(EXECUTABLES:%=$(MODULE)/%))
 
 test: $(TEST_EXEC)
-	$(TEST_EXEC)
+	./$(TEST_EXEC)
 
 clean:
 	\rm -f *.o core *.core *.gmon $(EXEC_FILES) LICENSE.i COPYRIGHT.i $(EXECUTABLES) $(CLEAN_FILES) $(TEST_PLIB)
