@@ -64,7 +64,7 @@
 
 struct Rand64State {
   /* The array for the state vector */
-  uint64_t mt[RAND64NN]; 
+  uint64_t mt[RAND64NN];
   /* mti==RAND64NN+1 means mt[RAND64NN] is not initialized */
   int mti;
   /* thread-safety */
@@ -103,7 +103,7 @@ double genrand64_real3(void);
  * Explicit state versions 
  */
 void init_genrand64(Rand64State *state, uint64_t seed);
-void init_by_array64(Rand64State *state, uint64_t init_key[], 
+void init_by_array64(Rand64State *state, uint64_t init_key[],
 		     uint64_t key_length);
 uint64_t genrand64_int64(Rand64State *state);
 int64_t genrand64_int63(Rand64State *state);
