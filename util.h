@@ -40,6 +40,11 @@ uint get_inet_addr(char* hostname);
 char *memmem(char *m, char *e, char *p, int l);
 hrtime_t hrtime();
 void hrtime_to_ts(hrtime_t t, struct timespec *ts);
+static inline hrtime_t ts_to_hrtime(struct timespec &ts) {
+  return ts.tv_sec * HRTIME_SEC + ts.tv_nsec * HRTIME_NSEC;
+}
+static inline double hrtime_to_sec(hrtime_t t) { return ((double)t) / ((double)HRTIME_SEC); }
+static inline double hrtime_sec() { return hrtime_to_sec(hrtime()); }
 void wait_for(hrtime_t t);
 void wait_till(hrtime_t t);
 void free_in(void *, hrtime_t);
@@ -71,4 +76,46 @@ inline void init_recursive_mutex(pthread_mutex_t *mutex) {
   pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
   pthread_mutex_init(mutex, &mutexattr);
 }
+
+class xrange {
+ public:
+  class iterator_type {
+   public:
+    typedef int value_type;
+    typedef int difference_type;
+    typedef const value_type *pointer;
+    typedef const value_type &reference;
+
+    iterator_type(value_type value, difference_type increment)
+        : value(value), increment(increment) {}
+    explicit iterator_type(value_type value) : value(value) {}
+
+    bool operator!=(const iterator_type &rhs) const {
+      return value != rhs.value;
+    }
+    value_type operator++() { return value += increment; }
+    operator pointer() const { return &value; }
+
+   private:
+    value_type value = 0;
+    const difference_type increment = 0;
+  };
+
+  typedef iterator_type iterator;
+  typedef const iterator_type const_iterator;
+
+  explicit xrange(int last) : last_(last) {}
+  xrange(int first, int last) : first_(first), last_(last) {}
+  xrange(int first, int last, int increment)
+      : first_(first), last_(last), increment_(increment) {}
+
+  iterator begin() const { return iterator(first_, increment_); }
+  iterator end() const { return iterator(last_); }
+
+ private:
+  int first_ = 0;
+  int last_ = 0;
+  int increment_ = 1;
+};
+
 #endif

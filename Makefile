@@ -3,10 +3,10 @@
 
 ifndef USE_PLIB
 MODULE=plib
-DEBUG=1
-#OPTIMIZE=1
+#DEBUG=1
+OPTIMIZE=1
 #PROFILE=1
-USE_GC=1
+#USE_GC=1
 #LEAK_DETECT=1
 #USE_READLINE=1
 #USE_EDITLINE=1
@@ -89,7 +89,7 @@ endif
 ifdef USE_EDITLINE
 ifeq ($(OS_TYPE),Linux)
   CFLAGS += -DUSE_EDITLINE
-  LIBS += -ledit -ltermcap
+  LIBS += -leditline
 endif
 ifeq ($(OS_TYPE),CYGWIN)
   CFLAGS += -DUSE_EDITLINE
@@ -103,14 +103,14 @@ ifeq ($(BUILD_VERSION),)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
-CFLAGS += -Wall
+CFLAGS += -std=c++1y -Wall -Wno-strict-aliasing
 # debug flags
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=1
 endif
 # optimized flags
 ifdef OPTIMIZE
-CFLAGS += -O3 -march=core2 
+CFLAGS += -O3 -march=native
 endif
 ifdef PROFILE
 CFLAGS += -pg

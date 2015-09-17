@@ -209,12 +209,10 @@ usage(ArgumentState *arg_state, char *arg) {
       case 0: fprintf(stderr, "          "); break;
       case 'L':
         fprintf(stderr,
-#ifdef __alpha
-                " %-9ld",
-#elifdef FreeBSD
+#ifdef FreeBSD
                 " %-9qd",
 #else
-                " %-9lld",
+                " %-9ld",
 #endif
                 *(int64*)desc[i].location);
         break;

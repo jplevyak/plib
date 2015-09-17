@@ -24,10 +24,6 @@
 #define MEMALIGN(_p,_n,_a) _p = GC_MALLOC(_n)
 #define FREE(_x) (void)(_x)
 #define DELETE(_x) (void)(_x)
-//#define malloc dont_use_malloc
-//#define realloc dont_use_realloc
-//#define free dont_use_free
-//#define delete dont_use_delete
 #else
 #define MEM_INIT() 
 #define MALLOC ::malloc
@@ -46,21 +42,6 @@ class gc {};
 ((((_x)>>4) > 9) ? (((_x)>>4) - 10 + 'A') : (((_x)>>4) + '0'))
 #define numberof(_x) ((sizeof(_x))/(sizeof((_x)[0])))
 #define max(a,b) ((a)>(b)?(a):(b))
-
-typedef char int8;
-typedef unsigned char uint8;
-typedef uint8 byte;
-typedef int int32;
-typedef unsigned int uint32;
-typedef long long int64;
-typedef unsigned long long uint64;
-typedef short int16;
-typedef unsigned short uint16;
-/* typedef uint32 uint; * already part of most systems */
-
-typedef const char cchar;
-typedef char *charptr_t;
-typedef const char *ccharptr_t;
 
 #ifdef EXTERN
 #define EXTERN_INIT(_x) = _x
@@ -81,6 +62,8 @@ typedef const char *ccharptr_t;
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS 1
 #endif
+
+#define _GNU_SOURCE 1
 
 #include <assert.h>
 #include <stdarg.h>
@@ -107,6 +90,23 @@ typedef const char *ccharptr_t;
 #include <string.h>
 #include <errno.h>
 #include <float.h>
+
+typedef int8_t int8;
+typedef uint8_t uint8;
+typedef uint8 byte;
+typedef int32_t int32;
+typedef uint32_t uint32;
+typedef int16_t int16;
+typedef uint16_t uint16;
+typedef int64_t int64;
+typedef uint64_t uint64;
+typedef __int128_t int128;
+typedef __uint128_t uint128;
+/* typedef uint32 uint; * already part of most systems */
+
+typedef const char cchar;
+typedef char *charptr_t;
+typedef const char *ccharptr_t;
 
 #include "tls.h"
 #include "arg.h"

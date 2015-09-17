@@ -9,9 +9,8 @@ static uint32 modular_exponent(uint32 base, uint32 power, uint32 modulus) {
   uint64 result = 1;
   for (int i = 31; i >= 0; i--) {
     result = (result*result) % modulus;
-    if (power & (1 << i)) {
+    if (power & (1 << i))
       result = (result*base) % modulus;
-    }
   }
   return (uint32)result;
 }

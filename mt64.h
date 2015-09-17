@@ -54,13 +54,17 @@
 
    Modified by John Plevyak in 2008 to be thread-safe.
 */
+#ifndef MT64_H_
+#define MT64_H_
 
+#include <stdint.h>
+#include <pthread.h>
 
 #define RAND64NN 312
 
 struct Rand64State {
   /* The array for the state vector */
-  unsigned long long mt[RAND64NN]; 
+  uint64_t mt[RAND64NN]; 
   /* mti==RAND64NN+1 means mt[RAND64NN] is not initialized */
   int mti;
   /* thread-safety */
@@ -72,20 +76,19 @@ struct Rand64State {
  */
 
 /* initializes mt[NN] with a seed */
-void init_genrand64(unsigned long long seed);
+void init_genrand64(uint64_t seed);
 
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array64(unsigned long long init_key[], 
-		     unsigned long long key_length);
+void init_by_array64(uint64_t init_key[], uint64_t key_length);
 
 /* generates a random number on [0, 2^64-1]-interval */
-unsigned long long genrand64_int64(void);
+uint64_t genrand64_int64(void);
 
 
 /* generates a random number on [0, 2^63-1]-interval */
-long long genrand64_int63(void);
+int64_t genrand64_int63(void);
 
 /* generates a random number on [0,1]-real-interval */
 double genrand64_real1(void);
@@ -99,11 +102,12 @@ double genrand64_real3(void);
 /* 
  * Explicit state versions 
  */
-void init_genrand64(Rand64State *state, unsigned long long seed);
-void init_by_array64(Rand64State *state, unsigned long long init_key[], 
-		     unsigned long long key_length);
-unsigned long long genrand64_int64(Rand64State *state);
-long long genrand64_int63(Rand64State *state);
+void init_genrand64(Rand64State *state, uint64_t seed);
+void init_by_array64(Rand64State *state, uint64_t init_key[], 
+		     uint64_t key_length);
+uint64_t genrand64_int64(Rand64State *state);
+int64_t genrand64_int63(Rand64State *state);
 double genrand64_real1(Rand64State *state);
 double genrand64_real2(Rand64State *state);
 double genrand64_real3(Rand64State *state);
+#endif  // MT64_H_

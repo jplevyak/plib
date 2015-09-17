@@ -37,6 +37,19 @@
 #define hashmask(n) (hashsize(n)-1)
 #define rot(x,k) (((x)<<(k)) | ((x)>>(32-(k))))
 
+
+#include <emmintrin.h>
+
+struct rand64state_t { uint64 a, b, c, d; };
+union z128 { __m128i h; uint64 x[2]; uint64 u64[2]; uint32 u32[4]; };
+struct hash128state_t {
+  z128 accum[48];
+  z128 data[52];
+  z128 s[4];
+  uint64 messagelen;
+  int datalen;
+};
+
 /*
  * -------------------------------------------------------------------------------
  *  mix -- mix 3 32-bit values reversibly.
@@ -769,7 +782,6 @@ typedef uint32 u4;
 typedef uint16 u2;
 typedef uint8 u1;
 typedef hash128state_t zorba;
-typedef uint128 z128;
 
 #define BYTES_PER_VAL  16
 #define BLOCK          48
@@ -1079,7 +1091,7 @@ z128 midhash( const void *message, size_t mlen, const void *key, size_t klen)
  *    * This: init() update() final(key1) final(key2) final(key3)
  *     *   is the same as: init() update() final(key3)
  *      */
-z128 hash128final(zorba *z, const void *key, size_t klen)
+uint128 hash128final(zorba *z, const void *key, size_t klen)
 {
   u8 total;
   //unsigned short lengths;
@@ -1097,14 +1109,12 @@ z128 hash128final(zorba *z, const void *key, size_t klen)
       memcpy(((char *)val.x)+z->datalen, key, klen);
     ((char *)val.x)[15] = 1 + z->datalen + (klen << 4);
     FINAL1(val.h);
-    return val;
-
+    return *(uint128*)&val;
   } 
 
   else if (total <= LARGE) {
-
-    return midhash(z->data, z->datalen, key, klen);
-
+    z128 tmp = midhash(z->data, z->datalen, key, klen);
+    return *(uint128*)&tmp;
   } else {
 
     /* four states, churn in parallel, finalization mixes those 4 states */
@@ -1185,16 +1195,14 @@ z128 hash128final(zorba *z, const void *key, size_t klen)
     /* mix s0..s3 to produce the final result */
     FINAL4(s);
     val.h = s0;
-    return val;
-
+    return *(uint128*)&val;
   }
-
 }
 
 
 
 /* hash a message all at once, with a key */
-z128 keyhash128( const void *message, size_t mlen, const void *key, size_t klen)
+uint128 keyhash128( const void *message, size_t mlen, const void *key, size_t klen)
 {
   size_t len = mlen + klen;
   if (len <= 15) {
@@ -1206,15 +1214,14 @@ z128 keyhash128( const void *message, size_t mlen, const void *key, size_t klen)
     memcpy(((char *)val.x)+mlen, key, klen);
     ((char *)val.x)[15] = 1 + mlen + (klen << 4);
     FINAL1(val.h);
-    return val;
-
+    return *(uint128*)&val;
   } else if (mlen <= LARGE) {
     
     __m128i buf[BLOCK];
     buf[mlen/16] = _mm_setzero_si128();
     memcpy(buf, message, mlen);
-    return midhash( buf, mlen, key, klen);
-
+    z128 tmp = midhash( buf, mlen, key, klen);
+    return *(uint128*)&tmp;
   } else {
 
     /* long message: do it the normal way */
@@ -1222,14 +1229,13 @@ z128 keyhash128( const void *message, size_t mlen, const void *key, size_t klen)
     hash128init(&z);
     hash128update(&z, message, mlen);
     return hash128final(&z, key, klen);
-
   }
 }
 
 
 
 /* hash a message all at once, without a key */
-z128 hash128( const void *message, size_t mlen)
+uint128 hash128( const void *message, size_t mlen)
 {
   if (mlen <= 15) {
 
@@ -1239,25 +1245,22 @@ z128 hash128( const void *message, size_t mlen)
     memcpy(((char *)val.x), message, mlen);
     ((char *)val.x)[15] = 1 + mlen;
     FINAL1(val.h);
-    return val;
-
+    return *(uint128*)&val;
   } else if (mlen <= LARGE) {
     
     char key[1];
     __m128i buf[BLOCK];
     buf[mlen/16] = _mm_setzero_si128();
     memcpy(buf, message, mlen);
-    return midhash( buf, mlen, key, 0);
-
+    z128 tmp =midhash( buf, mlen, key, 0);
+    return *(uint128*)&tmp;
   } else {
-
     /* long message: do it the normal way */
     zorba z;
     char key[1];
     hash128init(&z);
     hash128update(&z, message, mlen);
     return hash128final(&z, key, 0);
-
   }
 }
 

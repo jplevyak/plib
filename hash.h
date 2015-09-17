@@ -11,15 +11,8 @@
  * http://burtleburtle.net/bob
  */
 
-struct rand64state_t { uint64 a, b, c, d; };
-union uint128 { __m128i h; uint64 x[2]; uint64 u64[2]; uint32 u32[4]; };
-struct hash128state_t {
-  uint128 accum[48];
-  uint128 data[52];
-  uint128 s[4];
-  uint64 messagelen;
-  int datalen;
-};
+struct rand64state_t;
+struct hash128state_t;
 
 // fast for all size keys
 uint64 hash64(const void *key, size_t len);

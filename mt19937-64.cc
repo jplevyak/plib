@@ -55,6 +55,7 @@
 
 
 #include <stdio.h>
+#include <stdint.h>
 #include <pthread.h>
 #include "mt64.h"
 
@@ -66,31 +67,31 @@
 static Rand64State rand64state;
 
 /* initializes mt[RAND64NN] with a seed */
-void init_genrand64(Rand64State *state, unsigned long long seed)
+void init_genrand64(Rand64State *state, uint64_t seed)
 {
   pthread_mutex_init(&state->mutex, 0);
   pthread_mutex_lock(&state->mutex);
   int mti = state->mti = RAND64NN+1;
-  unsigned long long *mt = state->mt;
+  uint64_t *mt = state->mt;
   mt[0] = seed;
   for (mti=1; mti<RAND64NN; mti++) 
     mt[mti] =  (6364136223846793005ULL * (mt[mti-1] ^ (mt[mti-1] >> 62)) + mti);
   state->mti = mti;
   pthread_mutex_unlock(&state->mutex);
 }
-void init_genrand64(unsigned long long seed) {
+void init_genrand64(uint64_t seed) {
   init_genrand64(&rand64state, seed);
 }
 
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array64(Rand64State *state, unsigned long long init_key[], unsigned long long key_length)
+void init_by_array64(Rand64State *state, uint64_t init_key[], uint64_t key_length)
 {
   init_genrand64(state, 19650218ULL);
   pthread_mutex_lock(&state->mutex);
-  unsigned long long i, j, k;
-  unsigned long long *mt = state->mt;
+  uint64_t i, j, k;
+  uint64_t *mt = state->mt;
   i=1; j=0;
   k = (RAND64NN>key_length ? RAND64NN : key_length);
   for (; k; k--) {
@@ -110,19 +111,19 @@ void init_by_array64(Rand64State *state, unsigned long long init_key[], unsigned
   mt[0] = 1ULL << 63; /* MSB is 1; assuring non-zero initial array */ 
   pthread_mutex_unlock(&state->mutex);
 }
-void init_by_array64(unsigned long long init_key[], unsigned long long key_length) {
+void init_by_array64(uint64_t init_key[], uint64_t key_length) {
   init_by_array64(&rand64state, init_key, key_length);
 }
 
 /* generates a random number on [0, 2^64-1]-interval */
-unsigned long long genrand64_int64(Rand64State *state)
+uint64_t genrand64_int64(Rand64State *state)
 {
   int i;
-  unsigned long long x;
-  static unsigned long long mag01[2]={0ULL, MATRIX_A};
+  uint64_t x;
+  static uint64_t mag01[2]={0ULL, MATRIX_A};
 
   pthread_mutex_lock(&state->mutex);
-  unsigned long long *mt = state->mt;
+  uint64_t *mt = state->mt;
   if (state->mti >= RAND64NN) { /* generate RAND64NN words at one time */
 
     /* if init_genrand64() has not been called, */
@@ -154,16 +155,16 @@ unsigned long long genrand64_int64(Rand64State *state)
 
   return x;
 }
-unsigned long long genrand64_int64(void) {
+uint64_t genrand64_int64(void) {
   return genrand64_int64(&rand64state);
 }
 
 /* generates a random number on [0, 2^63-1]-interval */
-long long genrand64_int63(Rand64State *state)
+int64_t genrand64_int63(Rand64State *state)
 {
-  return (long long)(genrand64_int64(state) >> 1);
+  return (int64_t)(genrand64_int64(state) >> 1);
 }
-long long genrand64_int63(void) {
+int64_t genrand64_int63(void) {
   return genrand64_int64(&rand64state);
 }
 

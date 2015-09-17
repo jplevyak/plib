@@ -175,13 +175,6 @@ void test_stat() {
   Stat *allstats = 0;
   int nallstats = 0;
   snap_stats(&allstats, &nallstats);
-#if 0
-  printf("%lld %lld, %lld %lld\n", 
-         (long long int)allstats[TLS(test_stat_stat).id].sum, 
-         (long long int)allstats[TLS(test_stat_stat).id].count,
-         (long long int)allstats[TLS(test_gstat_stat).id].sum, 
-         (long long int)allstats[TLS(test_gstat_stat).id].count);
-#endif
   while (1) {
     wait_for(HRTIME_MSEC * 20);
     if (process_stat_snap()) break;
