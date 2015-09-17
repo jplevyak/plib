@@ -16,8 +16,8 @@ MAJOR=1
 MINOR=0
 endif
 
-ifndef CC
-CC = g++
+ifndef CXX
+CXX = g++
 endif
 
 ifndef PREFIX
@@ -165,13 +165,13 @@ version:
 	@echo $(MODULE) $(MAJOR).$(MINOR).$(BUILD_VERSION) '('$(OS_TYPE) $(OS_VERSION)')'
 
 version.o: version.cc
-	$(CC) $(CFLAGS) $(VERSIONCFLAGS) -c version.cc
+	$(CXX) $(CFLAGS) $(VERSIONCFLAGS) -c version.cc
 
 $(LIBRARY):  $(LIB_OBJS)
 	ar $(AR_FLAGS) $@ $^
 
 $(TEST_PLIB): $(TEST_PLIB_OBJS) $(LIB_SRCS) $(LIBRARIES)
-	$(CC) $(CFLAGS) -DTEST_LIB=1 $(TEST_PLIB_OBJS) $(LDFLAGS) $(LIB_SRCS) -o $@ $(LIBS)
+	$(CXX) $(CFLAGS) -DTEST_LIB=1 $(TEST_PLIB_OBJS) $(LDFLAGS) $(LIB_SRCS) -o $@ $(LIBS)
 
 LICENSE.i: LICENSE
 	rm -f LICENSE.i
