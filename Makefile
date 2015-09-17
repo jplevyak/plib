@@ -103,7 +103,7 @@ ifeq ($(BUILD_VERSION),)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
-CFLAGS += -std=c++1y -Wall -Wno-strict-aliasing
+CFLAGS += -std=c++11 -Wall -Wno-strict-aliasing
 # debug flags
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=1
