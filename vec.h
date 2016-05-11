@@ -727,18 +727,22 @@ inline int unmarshal(Vec<C,A,S> &v, char *buf) {
 template <class C, class A, int S> 
 inline int Vec<C,A,S>::write(int fd) {
   int r = 0, t = 0;
-  if ((r = ::write(fd, this, sizeof(*this))) < 0) return r; t += r;
-  if ((r = ::write(fd, v, n * sizeof(C))) < 0) return r; t += r;
+  if ((r = ::write(fd, this, sizeof(*this))) < 0) return r;
+  t += r;
+  if ((r = ::write(fd, v, n * sizeof(C))) < 0) return r;
+  t += r;
   return t;
 }
 
 template <class C, class A, int S> 
 inline int Vec<C,A,S>::read(int fd) {
   int r = 0, t = 0;
-  if ((r = ::read(fd, this, sizeof(*this))) < 0) return r; t += r;
+  if ((r = ::read(fd, this, sizeof(*this))) < 0) return r;
+  t += r;
   v = (C*)A::alloc(sizeof(C) * n);
   memset(v, 0, sizeof(C) * n);
-  if ((r = ::read(fd, v, n * sizeof(C))) < 0) return r; t += r;
+  if ((r = ::read(fd, v, n * sizeof(C))) < 0) return r;
+  t += r;
   return t;
 }
 

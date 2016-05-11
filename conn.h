@@ -45,7 +45,10 @@ class Conn : public ThreadPoolJob { public:
   buffer_t rbuf, wbuf;
 
   char *alloc_str(char *s, int l = 0) { 
-    if (!l) l = strlen(s); char *x = (char*)MALLOC(l); memcpy(x,s,l); return x; 
+    if (!l) l = strlen(s);
+    char *x = (char*)MALLOC(l);
+    memcpy(x,s,l);
+    return x; 
   }
   char *alloc_xml_value(char *s, char *e, char **r);
   char *alloc_date_str();
