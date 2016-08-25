@@ -34,6 +34,9 @@ extern "C" {
 #define USE_DL_PREFIX
 #define ONLY_MSPACES 1
 #define NO_MALLINFO 1
+#if defined(HAVE_MMAP)
+#undef HAVE_MMAP
+#endif
 #define HAVE_MMAP 0
 #define MSPACES 1
 #define DEFAULT_GRANULARITY (1LL<<17) /* 128k */
