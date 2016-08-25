@@ -41,7 +41,6 @@ class gc {};
 #define tohex2(_x) \
 ((((_x)>>4) > 9) ? (((_x)>>4) - 10 + 'A') : (((_x)>>4) + '0'))
 #define numberof(_x) ((sizeof(_x))/(sizeof((_x)[0])))
-#define max(a,b) ((a)>(b)?(a):(b))
 
 #ifdef EXTERN
 #define EXTERN_INIT(_x) = _x

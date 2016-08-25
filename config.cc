@@ -17,7 +17,7 @@ struct ConfigCallback {
 
 typedef int (*dynamic_config_fn_t)(char *, char *);
 
-struct DynamicFn {
+struct DynamicFn : public gc {
   dynamic_config_fn_t fn;
   char *data;
   DynamicFn(dynamic_config_fn_t afn, char *adata) : fn(afn), data(adata) {}
