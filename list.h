@@ -6,7 +6,7 @@
   Simple list classes including ones using internal links and ones using external cons cells.
 
   NOTE: SLL/DLL/Queue do not support use with certain types of multiple-inheritance.
-    if you get from g++: 
+    if you get from g++:
       warning: invalid access to non-static data member `A::link' of NULL object
       warning: (perhaps the `offsetof' macro was used incorrectly)
     use -Wno-invalid-offsetof with version 3.3+ of GCC
@@ -94,14 +94,14 @@ template <class C, class L = typename C::Link_link> struct Queue : public DLL<C,
   inline void insert(C *e, C *after);
   inline void append(Queue<C,L> &q);
   void clear() { head = NULL; tail = NULL; }
-  
+
   Queue() : tail(NULL) {}
 };
 #define Que(_c, _f) Queue<_c, _c::Link##_##_f>
 #define QueM(_c, _m, _mf, _f) Queue<_c, _c::Link##_##_mf##_##_f>
 
 template <class C, class L = typename C::Link_link> struct CountQueue : public Queue<C,L> {
-  int size; 
+  int size;
   inline CountQueue(void) : size(0) {}
   inline void push(C *e);
   inline C *pop();
@@ -148,7 +148,7 @@ struct List : public gc {
 
 /* IMPLEMENTATION */
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 SLL<C,L>::push(C *e) {
   next(e) = head;
   head = e;
@@ -164,7 +164,7 @@ SLL<C,L>::pop() {
   return ret;
 }
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 DLL<C,L>::push(C *e) {
   if (head)
     prev(head) = e;
@@ -198,7 +198,7 @@ DLL<C,L>::remove(C *e) {
 template <class C, class L> inline void
 DLL<C,L>::insert(C *e, C *after) {
   if (!after) { push(e); return; }
-  prev(e) = after; 
+  prev(e) = after;
   next(e) = next(after);
   next(after) = e;
   if (next(e)) prev(next(e)) = e;
@@ -247,7 +247,7 @@ Queue<C,L>::append(Queue<C,L> &q) {
   }
 }
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 Queue<C,L>::enqueue(C *e) {
   if (tail)
     insert(e, tail);
@@ -260,7 +260,7 @@ Queue<C,L>::dequeue() {
   return pop();
 }
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 CountQueue<C,L>::push(C *e) {
   Queue<C,L>::push(e);
   size++;
@@ -274,13 +274,13 @@ CountQueue<C,L>::pop() {
   return ret;
 }
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 CountQueue<C,L>::remove(C *e) {
   Queue<C,L>::remove(e);
   size--;
 }
 
-template <class C, class L> inline void 
+template <class C, class L> inline void
 CountQueue<C,L>::enqueue(C *e) {
   Queue<C,L>::enqueue(e);
   size++;
