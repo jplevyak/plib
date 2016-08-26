@@ -6,7 +6,7 @@ MODULE=plib
 #DEBUG=1
 OPTIMIZE=1
 #PROFILE=1
-USE_GC=1
+#USE_GC=1
 #LEAK_DETECT=1
 #USE_READLINE=1
 #USE_EDITLINE=1
@@ -64,8 +64,8 @@ else
 ifeq ($(OS_TYPE),Darwin)
 GC_CFLAGS += -I/usr/local/include
 else
-GC_CFLAGS += -I/usr/local/include 
-LIBS += -lrt -lpthread 
+GC_CFLAGS += -I/usr/local/include
+LIBS += -lrt -lpthread
 endif
 endif
 
@@ -105,6 +105,11 @@ ifeq ($(BUILD_VERSION),)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
+GCC_GTEQ_6 := $(shell expr `gcc -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/'` \>= 60000)
+ifneq ($(GCC_GTEQ_6),1)
+CFLAGS += -std=gnu++11
+endif
+
 CFLAGS += -Wall -Wno-strict-aliasing
 # debug flags
 ifdef DEBUG
@@ -126,7 +131,7 @@ CPPFLAGS += $(CFLAGS)
 LIBS += -lm
 
 AUX_FILES = $(MODULE)/Makefile $(MODULE)/LICENSE $(MODULE)/README
-TAR_FILES = $(AUX_FILES) $(TEST_FILES) $(MODULE)/BUILD_VERSION 
+TAR_FILES = $(AUX_FILES) $(TEST_FILES) $(MODULE)/BUILD_VERSION
 
 LIB_SRCS = arg.cc config.cc stat.cc misc.cc util.cc service.cc list.cc vec.cc map.cc threadpool.cc barrier.cc prime.cc mt19937-64.cc unit.cc log.cc conn.cc md5c.cc dlmalloc.cc persist.cc hash.cc
 LIB_OBJS = $(LIB_SRCS:%.cc=%.o)
@@ -141,7 +146,7 @@ else
 LIBRARY = libplib.a
 endif
 INSTALL_LIBRARIES = plib.a
-INCLUDES = 
+INCLUDES =
 #MANPAGES = plib.1
 
 ifeq ($(OS_TYPE),CYGWIN)
@@ -162,7 +167,7 @@ DEPEND_SRCS = $(ALL_SRCS)
 allplib: $(EXECUTABLES) $(LIBRARY)
 
 version:
-	@echo $(MODULE) $(MAJOR).$(MINOR).$(BUILD_VERSION) '('$(OS_TYPE) $(OS_VERSION)')'
+	@echo $(MODULE) $(MAJOR).$(MINOR).$(BUILD_VERSION) '('$(OS_TYPE) $(OS_VERSION)')' $(CFLAGS)
 
 version.o: version.cc
 	$(CXX) $(CFLAGS) $(VERSIONCFLAGS) -c version.cc
