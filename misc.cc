@@ -125,8 +125,6 @@ int xmkdir(cchar *p, mode_t mode) {
   return mkdir(pp, mode);
 }
 
-#define tohex1(_x) ((((_x)&15) > 9) ? (((_x)&15) - 10 + 'A') : (((_x)&15) + '0'))
-#define tohex2(_x) ((((_x) >> 4) > 9) ? (((_x) >> 4) - 10 + 'A') : (((_x) >> 4) + '0'))
 #define ESC(_c) \
   *ss++ = '\\'; \
   *ss++ = _c;   \

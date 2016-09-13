@@ -1,8 +1,9 @@
 /* -*-Mode: c++; -*-
    Copyright (c) 2003-2008 John Plevyak, All Rights Reserved
 */
-#include "conn.h"
 #include "plib.h"
+
+#include "conn.h"
 
 static pthread_mutex_t date_mutex = PTHREAD_MUTEX_INITIALIZER;
 static time_t date_time = 0;
