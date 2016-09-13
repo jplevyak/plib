@@ -10,8 +10,8 @@
 #include "gc.h"
 #define MEM_INIT() GC_INIT()
 #define MALLOC(_n) GC_MALLOC(_n)
-#define REALLOC(_p,_n) GC_REALLOC((_p),(_n))
-#define MEMALIGN(_p,_n,_a) _p = GC_MALLOC(_n)
+#define REALLOC(_p, _n) GC_REALLOC((_p), (_n))
+#define MEMALIGN(_p, _n, _a) _p = GC_MALLOC(_n)
 #define CHECK_LEAKS() GC_gcollect()
 #define FREE(_p) GC_FREE(_p)
 #define DELETE(_x)
@@ -20,27 +20,25 @@
 #include "gc_cpp.h"
 #define MEM_INIT() GC_INIT()
 #define MALLOC(_n) GC_MALLOC(_n)
-#define REALLOC(_p,_n) GC_REALLOC((_p),(_n))
-#define MEMALIGN(_p,_n,_a) _p = GC_MALLOC(_n)
+#define REALLOC(_p, _n) GC_REALLOC((_p), (_n))
+#define MEMALIGN(_p, _n, _a) _p = GC_MALLOC(_n)
 #define FREE(_x) (void)(_x)
 #define DELETE(_x) (void)(_x)
 #else
 #define MEM_INIT()
 #define MALLOC ::malloc
 #define REALLOC ::realloc
-#define MEMALIGN(_p,_a,_n) ::posix_memalign((void**)&(_p),(_a),(_n))
+#define MEMALIGN(_p, _a, _n) ::posix_memalign((void **)&(_p), (_a), (_n))
 #define FREE ::free
 #define DELETE(_x) delete _x
 class gc {};
 #endif
 #endif
 
-#define round2(_x,_n) ((_x + ((_n)-1)) & ~((_n)-1))
-#define tohex1(_x) \
-((((_x)&15) > 9) ? (((_x)&15) - 10 + 'A') : (((_x)&15) + '0'))
-#define tohex2(_x) \
-((((_x)>>4) > 9) ? (((_x)>>4) - 10 + 'A') : (((_x)>>4) + '0'))
-#define numberof(_x) ((sizeof(_x))/(sizeof((_x)[0])))
+#define round2(_x, _n) ((_x + ((_n)-1)) & ~((_n)-1))
+#define tohex1(_x) ((((_x)&15) > 9) ? (((_x)&15) - 10 + 'A') : (((_x)&15) + '0'))
+#define tohex2(_x) ((((_x) >> 4) > 9) ? (((_x) >> 4) - 10 + 'A') : (((_x) >> 4) + '0'))
+#define numberof(_x) ((sizeof(_x)) / (sizeof((_x)[0])))
 
 #ifdef EXTERN
 #define EXTERN_INIT(_x) = _x
@@ -51,8 +49,16 @@ class gc {};
 #define EXTERN extern
 #endif
 
-#define PERROR(_s) do { perror(_s); exit(1); } while(0)
-#define RETURN(_x) do { result = _x; goto Lreturn; } while (0)
+#define PERROR(_s) \
+  do {             \
+    perror(_s);    \
+    exit(1);       \
+  } while (0)
+#define RETURN(_x) \
+  do {             \
+    result = _x;   \
+    goto Lreturn;  \
+  } while (0)
 
 #define INIT_RAND64(_seed) init_genrand64(_seed)
 #define RND64() genrand64_int64()
