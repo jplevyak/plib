@@ -19,7 +19,7 @@ void register_global_stat(cchar *name, Stat &s); // per process
 int process_stat_snap_internal();
 EXTERN Stat* stat_snap_requested EXTERN_INIT(0);
 static inline int process_stat_snap() { // call in event loop
-  if (stat_snap_requested) 
+  if (stat_snap_requested)
     return process_stat_snap_internal();
   return 0;
 }

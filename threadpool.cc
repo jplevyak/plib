@@ -30,13 +30,13 @@ pthread_t ThreadPool::thread_create(void *(*start_routine)(void*), void * arg, i
   return t;
 }
 
-static void 
+static void
 start_thread(ThreadPool *pool) {
   pool->nthreads++;
   ThreadPool::thread_create(thread_pool_start, (void*)pool, pool->stacksize);
 }
 
-void 
+void
 ThreadPool::add_job(void *(*start)(void *), void* data) {
   pthread_mutex_lock(&mutex);
   ThreadPoolJob *job = job_freelist.alloc();
@@ -52,19 +52,19 @@ ThreadPool::add_job(void *(*start)(void *), void* data) {
   }
 }
 
-void 
+void
 ThreadPool::add_job(ThreadPoolJob *ajob) {
   pthread_mutex_lock(&mutex);
   ajob->thread_pool_integral = 1;
   jobs.enqueue(ajob);
-  if (nthreadswaiting) 
+  if (nthreadswaiting)
     pthread_cond_signal(&condition);
   else if (nthreads < maxthreads)
     start_thread(this);
   pthread_mutex_unlock(&mutex);
 }
 
-int 
+int
 ThreadPool::get_job(void *(**start)(void *), void**data, ThreadPoolJob **ajob) {
   pthread_mutex_lock(&mutex);
   while (1) {
@@ -110,7 +110,7 @@ ThreadPool::ThreadPool(int astacksize, int amaxthreads) {
   pthread_cond_init(&shutdown_condition, &cattr);
 }
 
-void 
+void
 ThreadPool::shutdown() {
   pthread_mutex_lock(&mutex);
   int saved_maxthreads = maxthreads;

@@ -46,14 +46,14 @@ class Timer {
   static double timespec_to_double(struct timespec &ts) {
     return (double)ts.tv_sec + ((double)ts.tv_nsec)/1000000000.0;
   }
-  void start() { 
-    struct timespec ts; 
-    clock_gettime(type, &ts); 
+  void start() {
+    struct timespec ts;
+    clock_gettime(type, &ts);
     start_time = timespec_to_double(ts);
   }
-  double snap() { 
-    struct timespec ts; 
-    clock_gettime(type, &ts); 
+  double snap() {
+    struct timespec ts;
+    clock_gettime(type, &ts);
     double stop_time = timespec_to_double(ts);
     double delta = stop_time - start_time;
     time += delta;
@@ -61,8 +61,8 @@ class Timer {
     return time;
   }
   double lap() {
-    struct timespec ts; 
-    clock_gettime(type, &ts); 
+    struct timespec ts;
+    clock_gettime(type, &ts);
     double stop_time = timespec_to_double(ts);
     double delta = stop_time - start_time;
     time += delta;
@@ -75,7 +75,7 @@ class Timer {
     time = 0;
     return accumulator[i];
   }
-  void reset() { 
+  void reset() {
     time = start_time = 0;
   }
   void restart() {

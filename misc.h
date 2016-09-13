@@ -107,7 +107,7 @@ static inline int get_token(char **ss) {
   return s-p;
 }
 
-static inline char *skip_eol(char *p) { 
+static inline char *skip_eol(char *p) {
   while (*p && *p != '\n') p++;
   return p;
 }

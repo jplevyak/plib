@@ -35,7 +35,7 @@ int Conn::get_line() {
       rbuf.line = rbuf.cur;
       rbuf.cur = x + 1;
       return 0;
-    }   
+    }
     p = rbuf.end;
     int lend = rbuf.bufend - rbuf.end;
     if (lend <= 0)
@@ -196,16 +196,16 @@ char *Conn::alloc_xml_value(char *s, char *e, char **r) {
   return alloc_str(p, pe-p);
 }
 
-char *Conn::alloc_date_str() { 
+char *Conn::alloc_date_str() {
   time_t t = time(0);
   pthread_mutex_lock(&date_mutex);
   if (t != date_time) {
     date_time = t;
     struct tm m;
     gmtime_r(&t, &m);
-    date_string_len = 
+    date_string_len =
       sprintf(date_string, "%s, %02u %s %04u %02u:%02u:%02u GMT",
-              weekdays[m.tm_wday], m.tm_mday, months[m.tm_mon], 
+              weekdays[m.tm_wday], m.tm_mday, months[m.tm_mon],
               1900 + m.tm_year, m.tm_hour, m.tm_min, m.tm_sec);
   }
   char *ret = alloc_str(date_string, date_string_len);

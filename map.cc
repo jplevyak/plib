@@ -81,7 +81,7 @@ test_map() {
   assert(ssh.get("ac") == 7);
   ssh.del(ho);
   assert(ssh.get(ho) == 0);
-  
+
   Vec<int> ints;
   ssh.get_values(ints);
   assert(ints.n == 8);

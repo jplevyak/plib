@@ -28,7 +28,7 @@ buf_read(cchar *pathname, char **buf, int *len) {
   *buf = 0;
   *len = 0;
   fd = open(pathname, O_RDONLY);
-  if (fd <= 0) 
+  if (fd <= 0)
     return -1;
   int ret = buf_read(fd, buf, len);
   close(fd);
@@ -60,7 +60,7 @@ void error(cchar *fmt, ...) {
 }
 
 char *trim(char *s, char *e) {
-  if (!e) 
+  if (!e)
     e = s + strlen(s) - 1;
   while (s < e && isspace(*s)) s++;
   for (;e > s; e--) {
@@ -251,8 +251,8 @@ int getifaddrname(struct sockaddr_in *addr, int *pmtu, char *ifname, int ifname_
   ifrend = (struct ifreq*)((char*)ibuf + ifc.ifc_len);
 
   for (; ifr < ifrend; ifr++) {
-    if (ioctl(fd, SIOCGIFFLAGS, (char*)ifr) < 0 || 
-        !(ifr->ifr_flags & IFF_UP) || 
+    if (ioctl(fd, SIOCGIFFLAGS, (char*)ifr) < 0 ||
+        !(ifr->ifr_flags & IFF_UP) ||
         ifr->ifr_flags & IFF_LOOPBACK)
       continue;
     // if I have already seen this interface, skip it

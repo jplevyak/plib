@@ -25,7 +25,7 @@
 #define FREE(_x) (void)(_x)
 #define DELETE(_x) (void)(_x)
 #else
-#define MEM_INIT() 
+#define MEM_INIT()
 #define MALLOC ::malloc
 #define REALLOC ::realloc
 #define MEMALIGN(_p,_a,_n) ::posix_memalign((void**)&(_p),(_a),(_n))

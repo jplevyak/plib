@@ -5,7 +5,7 @@
 #define _log_H
 
 /*
-  Provide application and error logging.  Optionally, logging points can be turned 
+  Provide application and error logging.  Optionally, logging points can be turned
   on or off with config variables.
 
   Fast version (for the critical path)
@@ -23,15 +23,15 @@
 
     ALOG(connection, new)("New connection open: %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
-  NOTE: the C++ standard requires that static variables including the one 
-    hidden by the alog macro be initialized the first time the function is called.  
-    This results in an extra hidden conditional at the head of the function which 
+  NOTE: the C++ standard requires that static variables including the one
+    hidden by the alog macro be initialized the first time the function is called.
+    This results in an extra hidden conditional at the head of the function which
     is additional overhead for that function each time it is called.
 
   Application Log
     alog("new connection open");
   Error logs
-    elog("bad error log");       
+    elog("bad error log");
 */
 
 enum LogLevel {
@@ -88,52 +88,52 @@ inline LocalLogTag::LocalLogTag(Log *alog, cchar *t1, cchar *t2, cchar *t3) : ac
   int_config(DYNAMIC_CONFIG, &active, log->default_active, t1, t2, t3);
 }
 
-inline int LocalLogTag::operator()(cchar *format, ...) { 
+inline int LocalLogTag::operator()(cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format); 
-  return log->vlog(LOG_LEVEL_DEFAULT, format, ap); 
+  va_list ap; va_start(ap, format);
+  return log->vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 
-inline int LocalLogTag::operator()(LogLevel l, cchar *format, ...) { 
+inline int LocalLogTag::operator()(LogLevel l, cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format); 
-  return log->vlog(l, format, ap); 
+  va_list ap; va_start(ap, format);
+  return log->vlog(l, format, ap);
 }
 
-inline GlobalLogTag::GlobalLogTag(Log *alog, cchar *at1, cchar *at2, cchar *at3) : 
-  active(0), log(alog), t1(at1), t2(at2), t3(at3) 
+inline GlobalLogTag::GlobalLogTag(Log *alog, cchar *at1, cchar *at2, cchar *at3) :
+  active(0), log(alog), t1(at1), t2(at2), t3(at3)
 {
   config_callback(global_tag_startup, (void*)this);
 }
 
-inline int GlobalLogTag::operator()(cchar *format, ...) { 
+inline int GlobalLogTag::operator()(cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format); 
-  return log->vlog(LOG_LEVEL_DEFAULT, format, ap); 
+  va_list ap; va_start(ap, format);
+  return log->vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 
-inline int GlobalLogTag::operator()(LogLevel l, cchar *format, ...) { 
+inline int GlobalLogTag::operator()(LogLevel l, cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format); 
-  return log->vlog(l, format, ap); 
+  va_list ap; va_start(ap, format);
+  return log->vlog(l, format, ap);
 }
 
-inline int Log::vlog(LogLevel l, cchar *format, va_list ap) { 
+inline int Log::vlog(LogLevel l, cchar *format, va_list ap) {
   if (l < level)
     return 0;
   char t[strlen(format) + 4];
   strcpy(t, format);
   strcat(t, "\n");
-  return vfprintf(fp, t, ap); 
+  return vfprintf(fp, t, ap);
 }
 
 inline int Log::operator()(LogLevel l, cchar *format, ...) {
-  va_list ap; va_start(ap, format); 
+  va_list ap; va_start(ap, format);
   return vlog(l, format, ap);
 }
 
 inline int Log::operator()(cchar *format, ...) {
-  va_list ap; va_start(ap, format); 
+  va_list ap; va_start(ap, format);
   return vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 

@@ -1,7 +1,7 @@
 #include <errno.h>
 #include "barrier.h"
 
-int 
+int
 barrier_init(barrier_t *barrier, int count) {
   int ret = 0;
   barrier->counter = count;
@@ -14,7 +14,7 @@ barrier_init(barrier_t *barrier, int count) {
   return 0;
 }
 
-int 
+int
 barrier_destroy(barrier_t *barrier) {
   int ret = 0;
   if ((ret = pthread_mutex_lock(&barrier->mutex)) != 0)
@@ -32,7 +32,7 @@ barrier_destroy(barrier_t *barrier) {
   return pthread_cond_destroy(&barrier->cond);
 }
 
-int 
+int
 barrier_signal(barrier_t *barrier) {
   int ret = 0;
   if ((ret = pthread_mutex_lock(&barrier->mutex)))
@@ -48,7 +48,7 @@ barrier_signal(barrier_t *barrier) {
   return ret;
 }
 
-int 
+int
 barrier_wait(barrier_t *barrier) {
   int ret = 0;
   if ((ret = pthread_mutex_lock(&barrier->mutex)))

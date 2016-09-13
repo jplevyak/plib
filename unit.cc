@@ -7,7 +7,7 @@ UnitTest *UnitTest::registered = 0;
 
 UnitTest::UnitTest(cchar *aname, unit_test_fn_t afn) {
   name = aname;
-  fn = afn; 
+  fn = afn;
   this->next = registered;
   registered = this;
 }
@@ -21,7 +21,7 @@ int UnitTest::err(cchar *format, ...) {
 
 int UnitTest::run_all() {
   int passed = 0, failed = 0;
-  for (UnitTest *s = registered; s; s = s->next) 
+  for (UnitTest *s = registered; s; s = s->next)
     if (!s->run()) {
       passed++;
       printf("PASSED %s\n", s->name);
