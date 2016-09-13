@@ -1,5 +1,5 @@
 /* -*-Mode: c++; -*-
-   lookup3.c, by Bob Jenkins, May 2006, Public Domain 
+   lookup3.c, by Bob Jenkins, May 2006, Public Domain
    Changes Copyright (c) 2010 John Plevyak, All Rights Reserved
 */
 #include "plib.h"
@@ -68,7 +68,7 @@ struct hash128state_t {
  *        the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
  *          is commonly produced by subtraction) look like a single 1-bit
  *            difference.
- *            * the base values were pseudorandom, all zero but one bit set, or 
+ *            * the base values were pseudorandom, all zero but one bit set, or
  *              all zero plus a counter that starts at zero.
  *
  *              Some k values for my "a-=c; a^=rot(c,k); c+=b;" arrangement that
@@ -78,7 +78,7 @@ struct hash128state_t {
  *                         14  9  3  7 17  3
  *                         Well, "9 15 3 18 27 15" didn't quite get 32 bits diffing
  *                         for "differ" defined as + with a one-bit base and a two-bit delta.  I
- *                         used http://burtleburtle.net/bob/hash/avalanche.html to choose 
+ *                         used http://burtleburtle.net/bob/hash/avalanche.html to choose
  *                         the operations, constants, and arrangements of the variables.
  *
  *                         This does not achieve avalanche.  There are input bits of (a,b,c)
@@ -117,7 +117,7 @@ struct hash128state_t {
  *        the output delta to a Gray code (a^(a>>1)) so a string of 1's (as
  *          is commonly produced by subtraction) look like a single 1-bit
  *            difference.
- *            * the base values were pseudorandom, all zero but one bit set, or 
+ *            * the base values were pseudorandom, all zero but one bit set, or
  *              all zero plus a counter that starts at zero.
  *
  *              These constants passed:
@@ -176,7 +176,7 @@ uint32_t        initval)         /* the previous hash, or an arbitrary value */
 
   /*------------------------------------------- handle the last 3 uint32_t's */
   switch(length)                     /* all the case statements fall through */
-  { 
+  {
   case 3 : c+=k[2];
   case 2 : b+=k[1];
   case 1 : a+=k[0];
@@ -193,7 +193,7 @@ uint32_t        initval)         /* the previous hash, or an arbitrary value */
  * --------------------------------------------------------------------
  *  hashword2() -- same as hashword(), but take two seeds and return two
  *  32-bit values.  pc and pb must both be nonnull, and *pc and *pb must
- *  both be initialized with seeds.  If you pass in (*pb)==0, the output 
+ *  both be initialized with seeds.  If you pass in (*pb)==0, the output
  *  (*pc) will be the same as the return value from hashword().
  *  --------------------------------------------------------------------
  *  */
@@ -222,7 +222,7 @@ uint32_t       *pb)               /* IN: more seed OUT: secondary hash value */
 
   /*------------------------------------------- handle the last 3 uint32_t's */
   switch(length)                     /* all the case statements fall through */
-  { 
+  {
   case 3 : c+=k[2];
   case 2 : b+=k[1];
   case 1 : a+=k[0];
@@ -286,7 +286,7 @@ uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     }
 
     /*----------------------------- handle the last (probably partial) block */
-    /* 
+    /*
  *      * "k[2]&0xffffff" actually reads beyond the end of the string, but
  *           * then masks off the part it's not allowed to read.  Because the
  *                * string is aligned, the masked-off tail is in the same word as the
@@ -442,7 +442,7 @@ uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
  *        * the key.  *pc is better mixed than *pb, so use *pc first.  If you want
  *         * a 64-bit value do something like "*pc + (((uint64_t)*pb)<<32)".
  *          */
-void hashlittle2( 
+void hashlittle2(
   const void *key,       /* the key to hash */
   size_t      length,    /* length of the key */
   uint32_t   *pc,        /* IN: primary initval, OUT: primary hash */
@@ -471,7 +471,7 @@ void hashlittle2(
     }
 
     /*----------------------------- handle the last (probably partial) block */
-    /* 
+    /*
  *      * "k[2]&0xffffff" actually reads beyond the end of the string, but
  *           * then masks off the part it's not allowed to read.  Because the
  *                * string is aligned, the masked-off tail is in the same word as the
@@ -622,7 +622,7 @@ void hashlittle2(
  *  * hashbig():
  *   * This is the same as hashword() on big-endian machines.  It is different
  *    * from hashlittle() on all machines.  hashbig() takes advantage of
- *     * big-endian byte ordering. 
+ *     * big-endian byte ordering.
  *      */
 uint32_t hashbig( const void *key, size_t length, uint32_t initval)
 {
@@ -648,7 +648,7 @@ uint32_t hashbig( const void *key, size_t length, uint32_t initval)
     }
 
     /*----------------------------- handle the last (probably partial) block */
-    /* 
+    /*
  *      * "k[2]<<8" actually reads beyond the end of the string, but
  *           * then shifts out the part it's not allowed to read.  Because the
  *                * string is aligned, the illegal read is in the same word as the
@@ -996,7 +996,7 @@ void hash128update(zorba *z, const void *data, size_t len)
     }
   }
 
-  /* store the registers */  
+  /* store the registers */
   FROM_REG(s,z->s,0);
   FROM_REG(l,z->accum,0);
   FROM_REG(k,z->accum,4);
@@ -1026,7 +1026,7 @@ z128 midhash( const void *message, size_t mlen, const void *key, size_t klen)
   z128 val;
   int total = mlen + klen;
   int counter;
-  
+
   if (klen > 16) {
     printf("key length must be 16 bytes or less\n");
     exit(1);
@@ -1042,16 +1042,16 @@ z128 midhash( const void *message, size_t mlen, const void *key, size_t klen)
     memset(((char *)cache)+total, 0, tail);
     total += tail;
   }
-  
+
   /* hash 32-byte blocks */
   s = _mm_set_epi32(0xdeadbeef, 0xdeadbeef, 0xdeadbeef, 0xdeadbeef);
-  c=d=e=f=g=h=i=j=k=l=s; 
+  c=d=e=f=g=h=i=j=k=l=s;
   for (counter=2; counter<=total/16; counter+=2) {
     CHURN1(cache,counter,-2,s,b,h,l);
     CHURN1(cache,counter,-1,s,a,i,k);
     l=j; k=i; j=h; i=g; h=f; g=e; f=d; e=c; d=b; c=a;
   }
-  
+
   /* possibly handle trailing 16-byte block, then use up accumulators */
   if (counter != total/16) {
     CHURN1(cache,counter,-2,s,b,h,l);
@@ -1077,12 +1077,12 @@ z128 midhash( const void *message, size_t mlen, const void *key, size_t klen)
     TAIL1(s,d);
     TAIL1(s,c);
   }
-  
+
   /* final mixing */
   FINAL1(s);
   val.h = s;
   return val;
-  
+
 }
 
 /*
@@ -1110,7 +1110,7 @@ uint128 hash128final(zorba *z, const void *key, size_t klen)
     ((char *)val.x)[15] = 1 + z->datalen + (klen << 4);
     FINAL1(val.h);
     return *(uint128*)&val;
-  } 
+  }
 
   else if (total <= LARGE) {
     z128 tmp = midhash(z->data, z->datalen, key, klen);
@@ -1144,7 +1144,7 @@ uint128 hash128final(zorba *z, const void *key, size_t klen)
     TO_REG(e,z->accum,28);
     TO_REG(d,z->accum,32);
     TO_REG(c,z->accum,36);
-    
+
     /* add the key and length; pad to a multiple of 64 bytes */
     if (klen)
       memcpy(((char *)z->data)+z->datalen, key, klen);
@@ -1165,7 +1165,7 @@ uint128 hash128final(zorba *z, const void *key, size_t klen)
       REG_REG(l,j); REG_REG(k,i); REG_REG(j,h); REG_REG(i,g); REG_REG(h,f);
       REG_REG(g,e); REG_REG(f,d); REG_REG(e,c); REG_REG(d,b); REG_REG(c,a);
     }
-    
+
     /* possibly another 64-byte chunk, then consume accumulators */
     if (counter != total/16) {
       CHURN4(cache,counter,-8,s,b,h,l);
@@ -1191,7 +1191,7 @@ uint128 hash128final(zorba *z, const void *key, size_t klen)
       TAIL4(s,d);
       TAIL4(s,c);
     }
-    
+
     /* mix s0..s3 to produce the final result */
     FINAL4(s);
     val.h = s0;
@@ -1216,7 +1216,7 @@ uint128 keyhash128( const void *message, size_t mlen, const void *key, size_t kl
     FINAL1(val.h);
     return *(uint128*)&val;
   } else if (mlen <= LARGE) {
-    
+
     __m128i buf[BLOCK];
     buf[mlen/16] = _mm_setzero_si128();
     memcpy(buf, message, mlen);
@@ -1247,7 +1247,7 @@ uint128 hash128( const void *message, size_t mlen)
     FINAL1(val.h);
     return *(uint128*)&val;
   } else if (mlen <= LARGE) {
-    
+
     char key[1];
     __m128i buf[BLOCK];
     buf[mlen/16] = _mm_setzero_si128();

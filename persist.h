@@ -69,7 +69,7 @@ static inline void *map_file_ro(cchar *fn, uint64 n = 0, int *pfd = 0, uint64 *p
     ::lseek(fd, 0, SEEK_SET);
   }
   void *m = 0;
-  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
+  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1)
     perror("mmap");
   if (pfd) *pfd = fd;
   if (pn) *pn = n;
@@ -89,7 +89,7 @@ static inline void *map_file_ro_atime(cchar *fn, uint64 n = 0, int *pfd = 0, uin
     ::lseek(fd, 0, SEEK_SET);
   }
   void *m = 0;
-  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
+  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1)
     perror("mmap");
   if (pfd) *pfd = fd;
   if (pn) *pn = n;
@@ -102,7 +102,7 @@ static inline void *map_file_ro(int fd, uint64 n = 0) {
     ::lseek(fd, 0, SEEK_SET);
   }
   void *m = 0;
-  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1) 
+  if ((m = mmap(0, n, PROT_READ, MAP_PRIVATE, fd, 0)) == (void*)-1)
     perror("mmap");
   return m;
 }
@@ -134,7 +134,7 @@ static inline char *read_file_to_string(cchar *fn, uint64 n = 0, int *pfd = 0) {
     ::lseek(fd, 0, SEEK_SET);
   }
   char *m = (char*)MALLOC(n+1);
-  m[n] = 0; 
+  m[n] = 0;
   ssize_t nn = ::read(fd, m, n);
   if (nn != (ssize_t)n)
     perror("read");
@@ -149,7 +149,7 @@ static inline void *persist_alloc(cchar *fn, uint64 n, int *pfd = 0) {
   assert(fd > 0);
   assert(!ftruncate(fd, n));
   void *m = 0;
-  if ((m = mmap(0, n, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_NORESERVE, fd, 0)) == (void*)-1) 
+  if ((m = mmap(0, n, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_NORESERVE, fd, 0)) == (void*)-1)
     perror("mmap");
   if (pfd) *pfd = fd;
   return m;

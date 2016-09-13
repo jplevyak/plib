@@ -36,11 +36,11 @@ template<class C> class ClassFreeList : public FreeList { public:
 
   C *alloc();
 
-  ClassFreeList(int acount = 64, int aalignment = 16) 
+  ClassFreeList(int acount = 64, int aalignment = 16)
     : FreeList(sizeof(C), acount, aalignment) {}
 };
 
-inline void 
+inline void
 FreeList::init(int asize, int acount, int aalignment) {
   size = asize;
   count = acount;
@@ -51,7 +51,7 @@ FreeList::init(int asize, int acount, int aalignment) {
   size = (size + alignment - 1) & ~(alignment-1);
 }
 
-inline void 
+inline void
 FreeList::xpand() {
   void *last = head;
 #if _XOPEN_SOURCE == 600
@@ -98,7 +98,7 @@ FreeList::free(void *ptr) {
 #endif
 }
 
-inline 
+inline
 FreeList::~FreeList() {
   while (block_head) {
     void *bh = *(void**)(((char*)block_head) + (count*size));

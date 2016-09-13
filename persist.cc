@@ -66,7 +66,7 @@ int init_persistent_memory() {
   if (persistent_fd < 0)
     return -1;
   assert(!truncate(persistent_memory_filename, PERSISTENT_MEMORY_SIZE));
-  void *r = mmap(PERSISTENT_MEMORY, PERSISTENT_MEMORY_SIZE, PROT_READ|PROT_WRITE, 
+  void *r = mmap(PERSISTENT_MEMORY, PERSISTENT_MEMORY_SIZE, PROT_READ|PROT_WRITE,
                  MMFLAGS, persistent_fd, 0);
   assert(r == PERSISTENT_MEMORY);
   mspace m = create_mspace_with_base((void*)(((char*)r) + PERSISTENT_MEMORY_HEADER), PERSISTENT_MEMORY_SIZE - PERSISTENT_MEMORY_HEADER, 0);

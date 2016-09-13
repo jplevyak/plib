@@ -34,7 +34,7 @@ void init_stat_thread() {
   stat_thread *t = new stat_thread;
   t->id = pthread_self();
   pthread_mutex_lock(&stat_mutex);
-  t->next = stat_threads; 
+  t->next = stat_threads;
   stat_threads = t;
   pthread_mutex_unlock(&stat_mutex);
 }
@@ -78,7 +78,7 @@ void snap_stats(Stat **pstat, int *plen) {
   }
   process_stat_list(global_stats, s);
   pthread_t me = pthread_self();
-  stat_thread *t = stat_threads; 
+  stat_thread *t = stat_threads;
   nstat_waiting = 0;
   while (t) {
     if (me != t->id)

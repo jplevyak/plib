@@ -41,7 +41,7 @@ test_list() {
 
   // insert/remove
 
-  B *b[100]; 
+  B *b[100];
   b[0] = new B(0);
   dll.push(b[0]);
   for (int i = 1; i < 100; i++)

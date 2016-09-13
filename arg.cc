@@ -20,13 +20,13 @@ static cchar *arg_types_desc[] = {
   "        "
 };
 
-static void 
+static void
 bad_flag(char *flag) {
   fprintf(stderr, "Unrecognized flag: '%s' (use '-h' for help)\n", flag);
   exit(1);
 }
 
-static void 
+static void
 missing_arg(char *flag) {
   fprintf(stderr, "Missing argument for flag: '%s' (use '-h' for help)\n", flag);
   exit(1);
@@ -35,7 +35,7 @@ missing_arg(char *flag) {
 static void
 copyivec(const void *l, char *arg, int n) {
   int *v = (int*)l;
-  for (int i = 0; i < n && arg; i++) { 
+  for (int i = 0; i < n && arg; i++) {
     v[i] = atoi(arg);
     if ((arg = strchr(arg, ','))) arg++;
   }
@@ -44,13 +44,13 @@ copyivec(const void *l, char *arg, int n) {
 static void
 copydvec(const void *l, char *arg, int n) {
   double *v = (double*)l;
-  for (int i = 0; i < n && arg; i++) { 
+  for (int i = 0; i < n && arg; i++) {
     v[i] = atof(arg);
     if ((arg = strchr(arg, ','))) arg++;
   }
 }
 
-static int 
+static int
 process_arg(ArgumentState *arg_state, int i, char ***argv, char *flag) {
   int done = 0;
   char *arg = NULL;
@@ -100,7 +100,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
   /* Grab Environment Variables */
   for (i = 0;; i++) {
     if (!desc[i].name)
-      break; 
+      break;
     if (desc[i].env) {
       char type = desc[i].type[0];
       char *env = getenv(desc[i].env);
@@ -157,7 +157,7 @@ process_args(ArgumentState *arg_state, int argc, char **argv) {
       }
     } else {
       arg_state->file_argument = (cchar **)REALLOC(
-        arg_state->file_argument, 
+        arg_state->file_argument,
         sizeof(cchar**) * (arg_state->nfile_arguments + 2));
       arg_state->file_argument[arg_state->nfile_arguments++] = dupstr(*argv);
       arg_state->file_argument[arg_state->nfile_arguments] = NULL;
@@ -183,7 +183,7 @@ print_string(cchar *s) {
     fprintf(stderr, " (null)   ");
 }
 
-void 
+void
 usage(ArgumentState *arg_state, char *arg) {
   ArgumentDescription *desc = arg_state->desc;
   int i;
@@ -195,15 +195,15 @@ usage(ArgumentState *arg_state, char *arg) {
       break;
     if (!desc[i].description)
       continue;
-    fprintf(stderr,"  %c%c%c %s%s%s%s", 
-            desc[i].key != ' ' ? '-' : ' ', desc[i].key, 
-            (desc[i].key != ' ' && desc[i].name && desc[i].name[0]) ? ',' : ' ', 
+    fprintf(stderr,"  %c%c%c %s%s%s%s",
+            desc[i].key != ' ' ? '-' : ' ', desc[i].key,
+            (desc[i].key != ' ' && desc[i].name && desc[i].name[0]) ? ',' : ' ',
             (desc[i].name && desc[i].name[0] != '\0') ? "--" : "  ",
             desc[i].name,
             (strlen(desc[i].name) + 61 < 79) ?
              &SPACES[strlen(desc[i].name)+61] : " ",
             arg_types_desc[desc[i].type ?
-                           strchr(arg_types_keys,desc[i].type[0])-arg_types_keys 
+                           strchr(arg_types_keys,desc[i].type[0])-arg_types_keys
                            : strlen(arg_types_keys) - 1]);
     switch(desc[i].type?desc[i].type[0]:0) {
       case 0: fprintf(stderr, "          "); break;
@@ -217,15 +217,15 @@ usage(ArgumentState *arg_state, char *arg) {
                 *(int64*)desc[i].location);
         break;
       case 'S': case 'v': case 'V': print_string((char*)desc[i].location); break;
-      case 'D': 
+      case 'D':
         if (*(double*)desc[i].location == DBL_ARG_UNSET)
           fprintf(stderr, " %-9s", "<unset>");
         else
           fprintf(stderr, " %-9.3e", *(double*)desc[i].location);
         break;
       case '+': case 'I': fprintf(stderr, " %-9d", *(int*)desc[i].location); break;
-      case 'T': case 'f': case 'F': 
-        fprintf(stderr, " %-9s", *(bool *)desc[i].location?"true ":"false"); 
+      case 'T': case 'f': case 'F':
+        fprintf(stderr, " %-9s", *(bool *)desc[i].location?"true ":"false");
         break;
       case 'C': {
         cchar *c = 0;

@@ -60,7 +60,7 @@ int accept_socket(int socket, bool nolinger, bool tcp_nodelay, int set_buf_size)
         default:
           PERROR("accept");
       }
-    } else 
+    } else
       break;
   }
   if (set_buf_size) {

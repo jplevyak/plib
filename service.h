@@ -7,7 +7,7 @@
 #define SERVER_SERVICE_PRIORITY 1
 
 class Service { public:
-  virtual void init() { reinit(); } 
+  virtual void init() { reinit(); }
   virtual void reinit() {}
   virtual void start() {}
   virtual void stop() {}

@@ -103,10 +103,10 @@ template <class K, class AHashFns, class C, class A = DefaultAlloc> class HashSe
 
 class StringHashFns {
  public:
-  static uintptr_t hash(cchar *s) { 
-    uintptr_t h = 0; 
+  static uintptr_t hash(cchar *s) {
+    uintptr_t h = 0;
     // 31 changed to 27, to avoid prime2 in vec.cpp
-    while (*s) h = h * 27 + (unsigned char)*s++;  
+    while (*s) h = h * 27 + (unsigned char)*s++;
     return h;
   }
   static int equal(cchar *a, cchar *b) { return !strcmp(a, b); }
@@ -114,8 +114,8 @@ class StringHashFns {
 
 class CaseStringHashFns {
  public:
-  static uintptr_t hash(cchar *s) { 
-    uintptr_t h = 0; 
+  static uintptr_t hash(cchar *s) {
+    uintptr_t h = 0;
     // 31 changed to 27, to avoid prime2 in vec.cpp
     while (*s) h = h * 27 + (unsigned char)toupper(*s++);
     return h;
@@ -142,7 +142,7 @@ template <class C, class AHashFns, class A = DefaultAlloc> class ChainHash : pub
   void get_elements(Vec<C> &elements);
 };
 
-template <class K, class AHashFns, class C, class A = DefaultAlloc> class ChainHashMap : 
+template <class K, class AHashFns, class C, class A = DefaultAlloc> class ChainHashMap :
   public Map<uintptr_t, List<MapElem<K,C>,A>,A> {
  public:
   using Map<uintptr_t, List<MapElem<K,C>,A>,A>::n;
@@ -192,7 +192,7 @@ template <class C, class AHashFns, int N, class A = DefaultAlloc> class NBlockHa
 /* use forv_Vec on BlockHashes */
 
 #define DEFAULT_BLOCK_HASH_SIZE 4
-template <class C, class ABlockHashFns> class BlockHash : 
+template <class C, class ABlockHashFns> class BlockHash :
   public NBlockHash<C, ABlockHashFns, DEFAULT_BLOCK_HASH_SIZE> {};
 typedef BlockHash<cchar *, StringHashFns> StringBlockHash;
 
@@ -213,7 +213,7 @@ template <class K, class C, class A = DefaultAlloc> class Env : public gc {
 
 /* IMPLEMENTATION */
 
-template <class K, class C, class A> inline C 
+template <class K, class C, class A> inline C
 Map<K,C,A>::get(K akey) {
   MapElem<K,C> e(akey, (C)0);
   MapElem<K,C> *x = this->set_in(e);
@@ -363,7 +363,7 @@ HashSet<K, AHashFns, C, A>::put(C avalue) {
   return put(avalue);
 }
 
-template <class K, class AHashFns, class C, class A> inline MapElem<K,C> * 
+template <class K, class AHashFns, class C, class A> inline MapElem<K,C> *
 HashMap<K,AHashFns,C,A>::get_internal(K akey) {
   if (!n)
     return 0;
@@ -386,7 +386,7 @@ HashMap<K,AHashFns,C,A>::get_internal(K akey) {
   return 0;
 }
 
-template <class K, class AHashFns, class C, class A> inline C 
+template <class K, class AHashFns, class C, class A> inline C
 HashMap<K,AHashFns,C,A>::get(K akey) {
   MapElem<K,C> *x = get_internal(akey);
   if (!x)
@@ -568,7 +568,7 @@ ChainHashMap<K, AHashFns, C, A>::get(K akey) {
   if (!x)
     return 0;
   List<MapElem<K,C>,A> *l = &x->value;
-  if (l->head) 
+  if (l->head)
     for (ConsCell<MapElem<K,C>,A> *p  = l->head; p; p = p->cdr)
       if (AHashFns::equal(akey, p->car.key))
         return p->car.value;
@@ -640,7 +640,7 @@ template <class K, class AHashFns, class C, class A> void
 ChainHashMap<K, AHashFns, C, A>::get_keys(Vec<K> &keys) {
   for (int i = 0; i < n; i++) {
     List<MapElem<K,C> > *l = &v[i].value;
-    if (l->head) 
+    if (l->head)
       for (ConsCell<MapElem<K,C>,A> *p  = l->head; p; p = p->cdr)
         keys.add(p->car.key);
   }
@@ -650,7 +650,7 @@ template <class K, class AHashFns, class C, class A> void
 ChainHashMap<K, AHashFns, C, A>::get_values(Vec<C> &values) {
   for (int i = 0; i < n; i++) {
     List<MapElem<K,C>,A> *l = &v[i].value;
-    if (l->head) 
+    if (l->head)
       for (ConsCell<MapElem<K,C>,A> *p  = l->head; p; p = p->cdr)
         values.add(p->car.value);
   }
@@ -662,9 +662,9 @@ StringChainHash<F,A>::canonicalize(cchar *s, cchar *e) {
   cchar *a = s;
   // 31 changed to 27, to avoid prime2 in vec.cpp
   if (e)
-    while (a != e) h = h * 27 + (unsigned char)*a++;  
+    while (a != e) h = h * 27 + (unsigned char)*a++;
   else
-    while (*a) h = h * 27 + (unsigned char)*a++;  
+    while (*a) h = h * 27 + (unsigned char)*a++;
   MapElem<uintptr_t,List<cchar*, A> > me(h, (char*)0);
   MapElem<uintptr_t,List<cchar*, A> > *x = this->set_in(me);
   if (x) {
@@ -692,7 +692,7 @@ StringChainHash<F,A>::canonicalize(cchar *s, cchar *e) {
   return s;
 }
 
-template <class K, class C, class A> inline C 
+template <class K, class C, class A> inline C
 Env<K,C,A>::get(K akey) {
   MapElem<K,List<C, A> *> e(akey, 0);
   MapElem<K,List<C, A> *> *x = store.set_in(e);
@@ -728,7 +728,7 @@ Env<K,C,A>::pop() {
     get_bucket(e->car)->pop();
 }
 
-template <class C, class AHashFns, int N, class A> inline 
+template <class C, class AHashFns, int N, class A> inline
 NBlockHash<C, AHashFns, N, A>::NBlockHash() : n(1), i(0) {
   memset(&e[0], 0, sizeof(e));
   v = e;
@@ -875,18 +875,18 @@ template <class C, class AHashFns, int N, class A> inline int
 NBlockHash<C, AHashFns, N, A>::count() {
   int nelements = 0;
   C *l = last();
-  for (C *xx = first(); xx < l; xx++) 
+  for (C *xx = first(); xx < l; xx++)
     if (*xx)
       nelements++;
   return nelements;
 }
 
-template <class C, class AHashFns, int N, class A> inline void 
+template <class C, class AHashFns, int N, class A> inline void
 NBlockHash<C, AHashFns, N, A>::copy(const NBlockHash<C, AHashFns, N, A> &hh) {
   clear();
   n = hh.n;
   i = hh.i;
-  if (hh.v == &hh.e[0]) { 
+  if (hh.v == &hh.e[0]) {
     memcpy(e, &hh.e[0], sizeof(e));
     v = e;
   } else {
@@ -898,13 +898,13 @@ NBlockHash<C, AHashFns, N, A>::copy(const NBlockHash<C, AHashFns, N, A> &hh) {
   }
 }
 
-template <class C, class AHashFns, int N, class A> inline void 
+template <class C, class AHashFns, int N, class A> inline void
 NBlockHash<C, AHashFns, N, A>::move(NBlockHash<C, AHashFns, N, A> &hh) {
   clear();
   n = hh.n;
   i = hh.i;
   v = hh.v;
-  if (hh.v == &hh.e[0]) { 
+  if (hh.v == &hh.e[0]) {
     memcpy(e, &hh.e[0], sizeof(e));
     v = e;
   }

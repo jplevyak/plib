@@ -29,11 +29,11 @@
         else {
           printf("failed!\n");
           return 1;
-        }        
+        }
     }
     UNIT_TEST_FUN(my_test);
 */
-  
+
 typedef int (*unit_test_fn_t)();
 
 class UnitTest { public:

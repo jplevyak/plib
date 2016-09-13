@@ -44,11 +44,11 @@ class Conn : public ThreadPoolJob { public:
   ConnFactory *factory;
   buffer_t rbuf, wbuf;
 
-  char *alloc_str(char *s, int l = 0) { 
+  char *alloc_str(char *s, int l = 0) {
     if (!l) l = strlen(s);
     char *x = (char*)MALLOC(l);
     memcpy(x,s,l);
-    return x; 
+    return x;
   }
   char *alloc_xml_value(char *s, char *e, char **r);
   char *alloc_date_str();
@@ -58,8 +58,8 @@ class Conn : public ThreadPoolJob { public:
   int get_some();
 
   int append_to_buf(buffer_t &b, cchar *s) { b.end = (byte*)scpy((char *)b.end, s); assert(b.end <= b.bufend); return 0; }
-  int append_to_buf_n(buffer_t &b, const byte *s, int n) { 
-    memcpy(b.end, s, n); b.end += n; assert(b.end <= b.bufend); return 0; 
+  int append_to_buf_n(buffer_t &b, const byte *s, int n) {
+    memcpy(b.end, s, n); b.end += n; assert(b.end <= b.bufend); return 0;
   }
   int append_string(cchar *str) { append_to_buf(wbuf, str); return 0; }
   int append_string(cchar *str, int len) { append_to_buf_n(wbuf, (const byte*)str, len); return 0; }

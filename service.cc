@@ -24,7 +24,7 @@ Service::Service(int apriority) {
 }
 
 void Service::start_all() {
-  for (Service *s = registered; s; s = s->next) 
+  for (Service *s = registered; s; s = s->next)
     services.add(s);
   qsort(&services.v[0], services.n, sizeof(services.v[0]), compar_service);
   forv_Service(s, services) s->init();

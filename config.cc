@@ -198,7 +198,7 @@ int string_config(int dyn, cchar **pstring, cchar *def, cchar *n1, cchar *n2, cc
     }
   }
 Lreturn:
-  if (dyn == SET_CONFIG) 
+  if (dyn == SET_CONFIG)
     callback_dynamic(name);
   pthread_mutex_unlock(&config_lock);
   return result;
@@ -303,7 +303,7 @@ int replace_config(cchar *fn) {
   fclose(tmpf);
   int r = rename(f, fn);
   if (r < 0) {
-    fprintf(stderr, "rename failed %d: %s, %s %s\n", 
+    fprintf(stderr, "rename failed %d: %s, %s %s\n",
             errno, strerror(errno), f, fn);
     unlink(f);
   }

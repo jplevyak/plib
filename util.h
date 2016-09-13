@@ -31,9 +31,9 @@
 typedef uint64 hrtime_t;
 
 int bind_port(int port, int protocol = SOCK_STREAM, bool nolinger = false);
-int accept_socket(int socket, bool nolinger = false, bool tcp_nodelay = true, 
+int accept_socket(int socket, bool nolinger = false, bool tcp_nodelay = true,
                   int set_buf_size = 0);
-int connect_socket(in_addr_t addr, int port, int client_buf_size = 0, bool client_nodelay = 1, 
+int connect_socket(in_addr_t addr, int port, int client_buf_size = 0, bool client_nodelay = 1,
                    bool client_nolinger = 0);
 pthread_t create_thread(void *(*fn)(void*), void *data = 0, int stack_size = 0);
 uint get_inet_addr(char* hostname);

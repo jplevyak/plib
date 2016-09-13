@@ -19,8 +19,8 @@ void global_tag_startup(void *data) {
   int_config(DYNAMIC_CONFIG, &t->active, t->log->default_active, t->t1, t->t2, t->t3);
 }
 
-Log::Log(cchar *aname, int adefault_active) 
-  : name(aname), fp(stderr), level(LOG_LEVEL_DEBUG), default_active(adefault_active) { 
+Log::Log(cchar *aname, int adefault_active)
+  : name(aname), fp(stderr), level(LOG_LEVEL_DEBUG), default_active(adefault_active) {
 }
 
 static class LogService : public Service {
