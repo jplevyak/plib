@@ -53,74 +53,71 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
-
-#include <stdio.h>
-#include <stdint.h>
 #include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
 #include "mt64.h"
 
 #define MM 156
 #define MATRIX_A 0xB5026F5AA96619E9ULL
 #define UM 0xFFFFFFFF80000000ULL /* Most significant 33 bits */
-#define LM 0x7FFFFFFFULL /* Least significant 31 bits */
+#define LM 0x7FFFFFFFULL         /* Least significant 31 bits */
 
 static Rand64State rand64state;
 
 /* initializes mt[RAND64NN] with a seed */
-void init_genrand64(Rand64State *state, uint64_t seed)
-{
+void init_genrand64(Rand64State *state, uint64_t seed) {
   pthread_mutex_init(&state->mutex, 0);
   pthread_mutex_lock(&state->mutex);
-  int mti = state->mti = RAND64NN+1;
+  int mti = state->mti = RAND64NN + 1;
   uint64_t *mt = state->mt;
   mt[0] = seed;
-  for (mti=1; mti<RAND64NN; mti++)
-    mt[mti] =  (6364136223846793005ULL * (mt[mti-1] ^ (mt[mti-1] >> 62)) + mti);
+  for (mti = 1; mti < RAND64NN; mti++) mt[mti] = (6364136223846793005ULL * (mt[mti - 1] ^ (mt[mti - 1] >> 62)) + mti);
   state->mti = mti;
   pthread_mutex_unlock(&state->mutex);
 }
-void init_genrand64(uint64_t seed) {
-  init_genrand64(&rand64state, seed);
-}
+void init_genrand64(uint64_t seed) { init_genrand64(&rand64state, seed); }
 
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array64(Rand64State *state, uint64_t init_key[], uint64_t key_length)
-{
+void init_by_array64(Rand64State *state, uint64_t init_key[], uint64_t key_length) {
   init_genrand64(state, 19650218ULL);
   pthread_mutex_lock(&state->mutex);
   uint64_t i, j, k;
   uint64_t *mt = state->mt;
-  i=1; j=0;
-  k = (RAND64NN>key_length ? RAND64NN : key_length);
+  i = 1;
+  j = 0;
+  k = (RAND64NN > key_length ? RAND64NN : key_length);
   for (; k; k--) {
-    mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 62)) * 3935559000370003845ULL))
-      + init_key[j] + j; /* non linear */
-    i++; j++;
-    if (i>=RAND64NN) { mt[0] = mt[RAND64NN-1]; i=1; }
-    if (j>=key_length) j=0;
-  }
-  for (k=RAND64NN-1; k; k--) {
-    mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 62)) * 2862933555777941757ULL))
-      - i; /* non linear */
+    mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 3935559000370003845ULL)) + init_key[j] + j; /* non linear */
     i++;
-    if (i>=RAND64NN) { mt[0] = mt[RAND64NN-1]; i=1; }
+    j++;
+    if (i >= RAND64NN) {
+      mt[0] = mt[RAND64NN - 1];
+      i = 1;
+    }
+    if (j >= key_length) j = 0;
+  }
+  for (k = RAND64NN - 1; k; k--) {
+    mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 2862933555777941757ULL)) - i; /* non linear */
+    i++;
+    if (i >= RAND64NN) {
+      mt[0] = mt[RAND64NN - 1];
+      i = 1;
+    }
   }
 
   mt[0] = 1ULL << 63; /* MSB is 1; assuring non-zero initial array */
   pthread_mutex_unlock(&state->mutex);
 }
-void init_by_array64(uint64_t init_key[], uint64_t key_length) {
-  init_by_array64(&rand64state, init_key, key_length);
-}
+void init_by_array64(uint64_t init_key[], uint64_t key_length) { init_by_array64(&rand64state, init_key, key_length); }
 
 /* generates a random number on [0, 2^64-1]-interval */
-uint64_t genrand64_int64(Rand64State *state)
-{
+uint64_t genrand64_int64(Rand64State *state) {
   int i;
   uint64_t x;
-  static uint64_t mag01[2]={0ULL, MATRIX_A};
+  static uint64_t mag01[2] = {0ULL, MATRIX_A};
 
   pthread_mutex_lock(&state->mutex);
   uint64_t *mt = state->mt;
@@ -128,19 +125,18 @@ uint64_t genrand64_int64(Rand64State *state)
 
     /* if init_genrand64() has not been called, */
     /* a default initial seed is used     */
-    if (state->mti == RAND64NN+1)
-      init_genrand64(5489ULL);
+    if (state->mti == RAND64NN + 1) init_genrand64(5489ULL);
 
-    for (i=0;i<RAND64NN-MM;i++) {
-      x = (mt[i]&UM)|(mt[i+1]&LM);
-      mt[i] = mt[i+MM] ^ (x>>1) ^ mag01[(int)(x&1ULL)];
+    for (i = 0; i < RAND64NN - MM; i++) {
+      x = (mt[i] & UM) | (mt[i + 1] & LM);
+      mt[i] = mt[i + MM] ^ (x >> 1) ^ mag01[(int)(x & 1ULL)];
     }
-    for (;i<RAND64NN-1;i++) {
-      x = (mt[i]&UM)|(mt[i+1]&LM);
-      mt[i] = mt[i+(MM-RAND64NN)] ^ (x>>1) ^ mag01[(int)(x&1ULL)];
+    for (; i < RAND64NN - 1; i++) {
+      x = (mt[i] & UM) | (mt[i + 1] & LM);
+      mt[i] = mt[i + (MM - RAND64NN)] ^ (x >> 1) ^ mag01[(int)(x & 1ULL)];
     }
-    x = (mt[RAND64NN-1]&UM)|(mt[0]&LM);
-    mt[RAND64NN-1] = mt[MM-1] ^ (x>>1) ^ mag01[(int)(x&1ULL)];
+    x = (mt[RAND64NN - 1] & UM) | (mt[0] & LM);
+    mt[RAND64NN - 1] = mt[MM - 1] ^ (x >> 1) ^ mag01[(int)(x & 1ULL)];
 
     state->mti = 0;
   }
@@ -155,42 +151,22 @@ uint64_t genrand64_int64(Rand64State *state)
 
   return x;
 }
-uint64_t genrand64_int64(void) {
-  return genrand64_int64(&rand64state);
-}
+uint64_t genrand64_int64(void) { return genrand64_int64(&rand64state); }
 
 /* generates a random number on [0, 2^63-1]-interval */
-int64_t genrand64_int63(Rand64State *state)
-{
-  return (int64_t)(genrand64_int64(state) >> 1);
-}
-int64_t genrand64_int63(void) {
-  return genrand64_int64(&rand64state);
-}
+int64_t genrand64_int63(Rand64State *state) { return (int64_t)(genrand64_int64(state) >> 1); }
+int64_t genrand64_int63(void) { return genrand64_int64(&rand64state); }
 
 /* generates a random number on [0,1]-real-interval */
-double genrand64_real1(Rand64State *state)
-{
-  return (genrand64_int64(state) >> 11) * (1.0/9007199254740991.0);
-}
-double genrand64_real1(void) {
-  return genrand64_real1(&rand64state);
-}
+double genrand64_real1(Rand64State *state) { return (genrand64_int64(state) >> 11) * (1.0 / 9007199254740991.0); }
+double genrand64_real1(void) { return genrand64_real1(&rand64state); }
 
 /* generates a random number on [0,1)-real-interval */
-double genrand64_real2(Rand64State *state)
-{
-  return (genrand64_int64(state) >> 11) * (1.0/9007199254740992.0);
-}
-double genrand64_real2(void) {
-  return genrand64_real2(&rand64state);
-}
+double genrand64_real2(Rand64State *state) { return (genrand64_int64(state) >> 11) * (1.0 / 9007199254740992.0); }
+double genrand64_real2(void) { return genrand64_real2(&rand64state); }
 
 /* generates a random number on (0,1)-real-interval */
-double genrand64_real3(Rand64State *state)
-{
-  return ((genrand64_int64(state) >> 12) + 0.5) * (1.0/4503599627370496.0);
+double genrand64_real3(Rand64State *state) {
+  return ((genrand64_int64(state) >> 12) + 0.5) * (1.0 / 4503599627370496.0);
 }
-double genrand64_real3(void) {
-  return genrand64_real3(&rand64state);
-}
+double genrand64_real3(void) { return genrand64_real3(&rand64state); }

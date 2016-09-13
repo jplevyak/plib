@@ -34,12 +34,13 @@ int UnitTest::run_all() {
 }
 
 static int my_test() {
-  return 0; // success
+  return 0;  // success
 }
 
 UNIT_TEST_FUN(my_test);
 
-static class MyUnitTest : public UnitTest { public:
+static class MyUnitTest : public UnitTest {
+ public:
   int run() { return 0; }
   MyUnitTest() : UnitTest("my unit test") {}
 } my_unit_test;

@@ -4,19 +4,24 @@
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
 
-class ThreadPoolJob { public:
-  void *(*start)(void*);
+class ThreadPoolJob {
+ public:
+  void *(*start)(void *);
   void *data;
 
-  virtual int main() { assert(!"no main();"); return 0; }
+  virtual int main() {
+    assert(!"no main();");
+    return 0;
+  }
 
   int thread_pool_integral;
   LINK(ThreadPoolJob, thread_pool_link);
 
-  ThreadPoolJob() : thread_pool_integral(0) { }
+  ThreadPoolJob() : thread_pool_integral(0) {}
 };
 
-class ThreadPool { public:
+class ThreadPool {
+ public:
   pthread_mutex_t mutex;
   pthread_cond_t condition, shutdown_condition;
   int nthreads, nthreadswaiting, maxthreads, stacksize;
@@ -25,15 +30,14 @@ class ThreadPool { public:
 
   void add_job(void *(*start)(void *), void *data);
   void add_job(ThreadPoolJob *job);
-  void shutdown(); // doesn't wait for queued but not running jobs
+  void shutdown();  // doesn't wait for queued but not running jobs
 
   ThreadPool(int astacksize = 0, int amaxthreads = INT_MAX);
   ~ThreadPool();
   // public utility function
-  static pthread_t thread_create(void *(*start_routine)(void*), void * arg, int stacksize = 0);
+  static pthread_t thread_create(void *(*start_routine)(void *), void *arg, int stacksize = 0);
   // private
   int get_job(void *(**start)(void *), void **data, ThreadPoolJob **job);
 };
 
 #endif
-

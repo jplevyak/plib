@@ -24,7 +24,7 @@ struct DynamicFn : public gc {
 };
 
 typedef MapElem<char *, char *> MECharChar;
-typedef MapElem<char *, Vec<DynamicFn*> *> MECharVecDyn;
+typedef MapElem<char *, Vec<DynamicFn *> *> MECharVecDyn;
 
 static ConfigCallback *callbacks = 0;
 static HashMap<char *, StringHashFns, char *> config;
@@ -45,17 +45,17 @@ static void build_name(char *name, cchar *n1, cchar *n2, cchar *n3) {
 }
 
 int int64_dynfn(char *data, char *value) {
-  *((int64*)data) = (int64)strtoll(value, 0, 0);
+  *((int64 *)data) = (int64)strtoll(value, 0, 0);
   return 0;
 }
 
 int int_dynfn(char *data, char *value) {
-  *((int*)data) = (int)strtol(value, 0, 0);
+  *((int *)data) = (int)strtol(value, 0, 0);
   return 0;
 }
 
 int string_dynfn(char *data, char *value) {
-  *((char**)data) = value;
+  *((char **)data) = value;
   return 0;
 }
 
@@ -71,14 +71,12 @@ static void dynamic(char *name, char *data, dynamic_config_fn_t fn) {
   return;
 }
 
-static void
-callback_dynamic(char *name) {
-  Vec<DynamicFn*> *d = dynamic_config.get(name);
+static void callback_dynamic(char *name) {
+  Vec<DynamicFn *> *d = dynamic_config.get(name);
   if (d) {
     char *v = config.get(name);
     if (v) {
-      forv_Vec(DynamicFn, dd, *d)
-        dd->fn(dd->data, v);
+      forv_Vec(DynamicFn, dd, *d) dd->fn(dd->data, v);
     }
   }
 }
@@ -90,8 +88,8 @@ int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n
   pthread_mutex_lock(&config_lock);
   switch (dyn) {
     case DYNAMIC_CONFIG:
-      dynamic(name, (char*)pint, int64_dynfn);
-      // fall through
+      dynamic(name, (char *)pint, int64_dynfn);
+    // fall through
     case GET_CONFIG: {
       char *v = config.get(name);
       if (!v) {
@@ -107,8 +105,7 @@ int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n
       char *v = xlltoa(def, value + 1022);
       MECharChar *e = config.get_internal(name);
       if (e) {
-        if (pint)
-          *pint = (int64)strtoll(e->value, 0, 0);
+        if (pint) *pint = (int64)strtoll(e->value, 0, 0);
         FREE(e->value);
         e->value = dupstr(v);
         RETURN(0);
@@ -118,8 +115,7 @@ int int64_config(int dyn, int64 *pint, int64 def, cchar *n1, cchar *n2, cchar *n
     }
   }
 Lreturn:
-  if (dyn == SET_CONFIG)
-    callback_dynamic(name);
+  if (dyn == SET_CONFIG) callback_dynamic(name);
   pthread_mutex_unlock(&config_lock);
   return result;
 }
@@ -131,8 +127,8 @@ int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
   pthread_mutex_lock(&config_lock);
   switch (dyn) {
     case DYNAMIC_CONFIG:
-      dynamic(name, (char*)pint, int_dynfn);
-      // fall through
+      dynamic(name, (char *)pint, int_dynfn);
+    // fall through
     case GET_CONFIG: {
       char *v = config.get(name);
       if (!v) {
@@ -148,8 +144,7 @@ int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
       char *v = xlltoa(def, value + 1022);
       MECharChar *e = config.get_internal(name);
       if (e) {
-        if (pint)
-          *pint = (int)strtol(e->value, 0, 0);
+        if (pint) *pint = (int)strtol(e->value, 0, 0);
         FREE(e->value);
         e->value = dupstr(v);
         RETURN(0);
@@ -159,8 +154,7 @@ int int_config(int dyn, int *pint, int def, cchar *n1, cchar *n2, cchar *n3) {
     }
   }
 Lreturn:
-  if (dyn == SET_CONFIG)
-    callback_dynamic(name);
+  if (dyn == SET_CONFIG) callback_dynamic(name);
   pthread_mutex_unlock(&config_lock);
   return result;
 }
@@ -172,8 +166,8 @@ int string_config(int dyn, cchar **pstring, cchar *def, cchar *n1, cchar *n2, cc
   pthread_mutex_lock(&config_lock);
   switch (dyn) {
     case DYNAMIC_CONFIG:
-      dynamic(name, (char*)pstring, string_dynfn);
-      // fall through
+      dynamic(name, (char *)pstring, string_dynfn);
+    // fall through
     case GET_CONFIG: {
       char *v = config.get(name);
       if (!v) {
@@ -198,8 +192,7 @@ int string_config(int dyn, cchar **pstring, cchar *def, cchar *n1, cchar *n2, cc
     }
   }
 Lreturn:
-  if (dyn == SET_CONFIG)
-    callback_dynamic(name);
+  if (dyn == SET_CONFIG) callback_dynamic(name);
   pthread_mutex_unlock(&config_lock);
   return result;
 }
@@ -224,16 +217,13 @@ static void read_config(FILE *fp) {
   pthread_mutex_lock(&config_lock);
   while (fgets(ss, 255, fp)) {
     s = trim(ss);
-    if (*s == '#' || *s == '/' || *s == 0 || *s == ';')
-      continue;
+    if (*s == '#' || *s == '/' || *s == 0 || *s == ';') continue;
     char *eq = strchr(s, '=');
-    if (!eq)
-      continue;
+    if (!eq) continue;
     *eq++ = 0;
     trim(s);
     eq = trim(eq);
-    if (*eq == 0)
-      continue;
+    if (*eq == 0) continue;
     string_config(SET_CONFIG, 0, eq, s);
   }
   pthread_mutex_unlock(&config_lock);
@@ -241,7 +231,7 @@ static void read_config(FILE *fp) {
 }
 
 static void read_config() {
-  char *s = (char*)alloca(strlen(config_filenames) + 1);
+  char *s = (char *)alloca(strlen(config_filenames) + 1);
   strcpy(s, config_filenames);
   while (s) {
     char *e = strchr(s, ',');
@@ -253,8 +243,7 @@ static void read_config() {
     }
 #ifndef __CYGWIN__
     wordexp_t p;
-    if (wordexp(s, &p, WRDE_NOCMD|WRDE_UNDEF) < 0)
-      continue;
+    if (wordexp(s, &p, WRDE_NOCMD | WRDE_UNDEF) < 0) continue;
     char **w = p.we_wordv;
     for (int i = 0; i < (int)p.we_wordc; i++) {
       FILE *fp = fopen(w[i], "r");
@@ -264,8 +253,7 @@ static void read_config() {
     wordfree(&p);
 #else
     glob_t g;
-    if (glob(s, GLOB_TILDE|GLOB_BRACE|GLOB_NOMAGIC, NULL, &g) < 0)
-      continue;
+    if (glob(s, GLOB_TILDE | GLOB_BRACE | GLOB_NOMAGIC, NULL, &g) < 0) continue;
     char **w = g.gl_pathv;
     for (int i = 0; i < (int)g.gl_pathc; i++) {
       FILE *fp = fopen(w[i], "r");
@@ -281,8 +269,7 @@ static void read_config() {
 
 void write_config(FILE *fp) {
   pthread_mutex_unlock(&config_lock);
-  form_Map(MECharChar, m, config)
-    fprintf(fp, "%s = %s\n", m->key, m->value);
+  form_Map(MECharChar, m, config) fprintf(fp, "%s = %s\n", m->key, m->value);
   pthread_mutex_lock(&config_lock);
 }
 
@@ -290,8 +277,7 @@ int replace_config(cchar *fn) {
   char f[1024];
   strcpy(f, fn);
   char *d = strrchr(f, '/');
-  if (!d)
-    return -1;
+  if (!d) return -1;
   strcpy(d + 1, "conftmpXXXXXX");
   int fd = mkstemp(f);
   if (fd < 0) {
@@ -303,8 +289,7 @@ int replace_config(cchar *fn) {
   fclose(tmpf);
   int r = rename(f, fn);
   if (r < 0) {
-    fprintf(stderr, "rename failed %d: %s, %s %s\n",
-            errno, strerror(errno), f, fn);
+    fprintf(stderr, "rename failed %d: %s, %s %s\n", errno, strerror(errno), f, fn);
     unlink(f);
   }
   return r;
@@ -333,4 +318,3 @@ void config_callback(config_callback_pfn pfn, void *data) {
   cc->next = callbacks;
   callbacks = cc;
 }
-

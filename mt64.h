@@ -57,8 +57,8 @@
 #ifndef MT64_H_
 #define MT64_H_
 
-#include <stdint.h>
 #include <pthread.h>
+#include <stdint.h>
 
 #define RAND64NN 312
 
@@ -86,7 +86,6 @@ void init_by_array64(uint64_t init_key[], uint64_t key_length);
 /* generates a random number on [0, 2^64-1]-interval */
 uint64_t genrand64_int64(void);
 
-
 /* generates a random number on [0, 2^63-1]-interval */
 int64_t genrand64_int63(void);
 
@@ -103,8 +102,7 @@ double genrand64_real3(void);
  * Explicit state versions
  */
 void init_genrand64(Rand64State *state, uint64_t seed);
-void init_by_array64(Rand64State *state, uint64_t init_key[],
-		     uint64_t key_length);
+void init_by_array64(Rand64State *state, uint64_t init_key[], uint64_t key_length);
 uint64_t genrand64_int64(Rand64State *state);
 int64_t genrand64_int63(Rand64State *state);
 double genrand64_real1(Rand64State *state);

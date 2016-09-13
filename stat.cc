@@ -68,10 +68,9 @@ void snap_stats(Stat **pstat, int *plen) {
     pthread_cond_wait(&stat_done_condition, &stat_mutex);
   }
   int l = sizeof(Stat) * nstats;
-  Stat *s = (Stat*)MALLOC(l);
+  Stat *s = (Stat *)MALLOC(l);
   memset(s, 0, l);
-  form_Map(MapCCharInt::ME, x, stats)
-    s[x->value-1].name = x->key;
+  form_Map(MapCCharInt::ME, x, stats) s[x->value - 1].name = x->key;
   for (int i = 0; i < nstats; i++) {
     s[i].id = i;
     assert(s[i].name);
@@ -91,8 +90,7 @@ void snap_stats(Stat **pstat, int *plen) {
     snap_serial++;
     TLS(my_snap_serial) = snap_serial;
     stat_snap_requested = s;
-    while (nstat_waiting > 0)
-      pthread_cond_wait(&stat_condition, &stat_mutex);
+    while (nstat_waiting > 0) pthread_cond_wait(&stat_condition, &stat_mutex);
     stat_snap_requested = 0;
     pthread_cond_signal(&stat_done_condition);
   }
@@ -125,7 +123,7 @@ void register_stat(cchar *name, Stat &s) {
   get_stat_id(name, s);
   pthread_mutex_unlock(&stat_mutex);
   s.next = TLS(thread_stats);
-  assert((Stat*)&TLS(thread_stats) != &s);
+  assert((Stat *)&TLS(thread_stats) != &s);
   TLS(thread_stats) = &s;
 }
 

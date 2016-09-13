@@ -24,17 +24,17 @@ documentation and/or software.
 #define _MD5_H_
 /* MD5 context. */
 typedef struct MD5Context {
-  unsigned int state[4];	/* state (ABCD) */
-  unsigned int count[2];	/* number of bits, modulo 2^64 (lsb first) */
-  unsigned char buffer[64];	/* input buffer */
+  unsigned int state[4];    /* state (ABCD) */
+  unsigned int count[2];    /* number of bits, modulo 2^64 (lsb first) */
+  unsigned char buffer[64]; /* input buffer */
 } MD5_CTX;
 
-void   MD5Init (MD5_CTX *);
-void   MD5Update (MD5_CTX *, const unsigned char *, unsigned int);
-void   MD5Pad (MD5_CTX *);
-void   MD5Final (unsigned char [16], MD5_CTX *);
-char * MD5End(MD5_CTX *, char *);
-char * MD5File(const char *, char *);
-char * MD5Data(unsigned char [16], const unsigned char *output, unsigned int output_len);
+void MD5Init(MD5_CTX *);
+void MD5Update(MD5_CTX *, const unsigned char *, unsigned int);
+void MD5Pad(MD5_CTX *);
+void MD5Final(unsigned char[16], MD5_CTX *);
+char *MD5End(MD5_CTX *, char *);
+char *MD5File(const char *, char *);
+char *MD5Data(unsigned char[16], const unsigned char *output, unsigned int output_len);
 
 #endif

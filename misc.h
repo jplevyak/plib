@@ -4,8 +4,8 @@
 #ifndef _misc_H
 #define _misc_H
 
-#include <fcntl.h>
 #include <ctype.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include "vec.h"
 
@@ -19,37 +19,43 @@ int str2strVec(char *s, Vec<char *> &v, const char *delimitor = ",");
 int xmkdir(cchar *p, mode_t mode);
 int expand_filename(char *p, int len);
 
-static inline char *xitoa(int i, char *c) { // c points to END of the string
+static inline char *xitoa(int i, char *c) {  // c points to END of the string
   int neg = 0;
-  if (i < 0) { neg = 1; i = -i; }
+  if (i < 0) {
+    neg = 1;
+    i = -i;
+  }
   do {
-    *c-- = (char)(i%10+48);
-  } while ((i/=10) > 0);
+    *c-- = (char)(i % 10 + 48);
+  } while ((i /= 10) > 0);
   if (neg) *c-- = '-';
-  return c+1;
+  return c + 1;
 }
 
-static inline char *xlltoa(int64 i, char *c) { // c points to END of the string
+static inline char *xlltoa(int64 i, char *c) {  // c points to END of the string
   int neg = 0;
-  if (i < 0) { neg = 1; i = -i; }
+  if (i < 0) {
+    neg = 1;
+    i = -i;
+  }
   do {
-    *c-- = (char)(i%10+48);
-  } while ((i/=10) > 0);
+    *c-- = (char)(i % 10 + 48);
+  } while ((i /= 10) > 0);
   if (neg) *c-- = '-';
-  return c+1;
+  return c + 1;
 }
 
 static inline char *xutoa(uint32 i, char *e) {
   do {
-    *--e = (char)(i%10+48);
-  } while ((i/=10) > 0);
+    *--e = (char)(i % 10 + 48);
+  } while ((i /= 10) > 0);
   return e;
 }
 
 static inline char *xutoa(uint64 i, char *e) {
   do {
-    *--e = (char)(i%10+48);
-  } while ((i/=10) > 0);
+    *--e = (char)(i % 10 + 48);
+  } while ((i /= 10) > 0);
   return e;
 }
 
@@ -69,24 +75,22 @@ static inline uint64 xatoull(char *s, char *e) {
 }
 
 static inline void *_xmemdup(void *p, int len) {
-  if (len <= 0)
-    return 0;
+  if (len <= 0) return 0;
   void *pp = MALLOC(len);
   memcpy(pp, p, len);
   return pp;
 }
 
-static inline char*
-dupstr(cchar *s, cchar *e = 0) {
-  int l = e ? e-s : strlen(s);
-  char *ss = (char*)MALLOC(l+1);
+static inline char *dupstr(cchar *s, cchar *e = 0) {
+  int l = e ? e - s : strlen(s);
+  char *ss = (char *)MALLOC(l + 1);
   memcpy(ss, s, l);
   ss[l] = 0;
   return ss;
 }
 
 static inline char *memdup(void *p, int len) {
-  char *pp = (char*)MALLOC(len);
+  char *pp = (char *)MALLOC(len);
   memcpy(pp, p, len);
   return pp;
 }
@@ -104,7 +108,7 @@ static inline int get_token(char **ss) {
   *ss = s;
   char *p = s;
   while (*s && !isspace(*s)) s++;
-  return s-p;
+  return s - p;
 }
 
 static inline char *skip_eol(char *p) {
@@ -122,8 +126,8 @@ char *dupstrs(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
 // mtu is -1 if unknown
 int getifaddrname(struct sockaddr_in *addr, int *pmtu = 0, char *ifname = 0, int ifname_len = 0);
 
-#define htonll(_x) (((uint64)htonl((uint32)_x)) | (((uint64)(htonl((uint32)((_x)>>32))))<<32))
-#define ntohll(_x) (((uint64)ntohl((uint32)_x)) | (((uint64)(ntohl((uint32)((_x)>>32))))<<32))
+#define htonll(_x) (((uint64)htonl((uint32)_x)) | (((uint64)(htonl((uint32)((_x) >> 32)))) << 32))
+#define ntohll(_x) (((uint64)ntohl((uint32)_x)) | (((uint64)(ntohl((uint32)((_x) >> 32)))) << 32))
 
 char *quote_string(cchar *s);
 char *escape_string(cchar *s);

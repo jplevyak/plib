@@ -6,9 +6,9 @@
 
 class Conn;
 
-#define GET_CONFIG              0
-#define DYNAMIC_CONFIG          1
-#define SET_CONFIG              2
+#define GET_CONFIG 0
+#define DYNAMIC_CONFIG 1
+#define SET_CONFIG 2
 
 EXTERN char config_filenames[1024] EXTERN_INIT("~/.plibrc,plib.init");
 

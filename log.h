@@ -47,7 +47,8 @@ enum LogLevel {
 
 #define LOG_LEVEL_DEFAULT LOG_LEVEL_DEBUG
 
-class Log { public:
+class Log {
+ public:
   cchar *name;
   FILE *fp;
   LogLevel level;
@@ -59,7 +60,8 @@ class Log { public:
   Log(cchar *aname, int adefault_active = 0);
 };
 
-class LocalLogTag { public:
+class LocalLogTag {
+ public:
   int active;
   Log *log;
   LocalLogTag(Log *alog, cchar *t1, cchar *t2 = 0, cchar *t3 = 0);
@@ -67,7 +69,8 @@ class LocalLogTag { public:
   int operator()(LogLevel l, cchar *format, ...);
 };
 
-class GlobalLogTag { public:
+class GlobalLogTag {
+ public:
   int active;
   Log *log;
   cchar *t1, *t2, *t3;
@@ -80,7 +83,9 @@ EXTERN Log alog EXTERN_ARGS(("alog", 0));
 EXTERN Log elog EXTERN_ARGS(("elog", 1));
 
 #define DEF_ALOG(_t1, _t2) GlobalLogTag alog_##_t1##_##_t2(&alog, #_t1, #_t2)
-#define ALOG(_t1, _t2) static LocalLogTag ALOG_LOCAL__##_t1##__##_t2(&alog, #_t1, #_t2); ALOG_LOCAL__##_t1##__##_t2
+#define ALOG(_t1, _t2)                                              \
+  static LocalLogTag ALOG_LOCAL__##_t1##__##_t2(&alog, #_t1, #_t2); \
+  ALOG_LOCAL__##_t1##__##_t2
 
 void global_tag_startup(void *data);
 
@@ -90,37 +95,39 @@ inline LocalLogTag::LocalLogTag(Log *alog, cchar *t1, cchar *t2, cchar *t3) : ac
 
 inline int LocalLogTag::operator()(cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return log->vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 
 inline int LocalLogTag::operator()(LogLevel l, cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return log->vlog(l, format, ap);
 }
 
-inline GlobalLogTag::GlobalLogTag(Log *alog, cchar *at1, cchar *at2, cchar *at3) :
-  active(0), log(alog), t1(at1), t2(at2), t3(at3)
-{
-  config_callback(global_tag_startup, (void*)this);
+inline GlobalLogTag::GlobalLogTag(Log *alog, cchar *at1, cchar *at2, cchar *at3)
+    : active(0), log(alog), t1(at1), t2(at2), t3(at3) {
+  config_callback(global_tag_startup, (void *)this);
 }
 
 inline int GlobalLogTag::operator()(cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return log->vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 
 inline int GlobalLogTag::operator()(LogLevel l, cchar *format, ...) {
   if (!active) return 0;
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return log->vlog(l, format, ap);
 }
 
 inline int Log::vlog(LogLevel l, cchar *format, va_list ap) {
-  if (l < level)
-    return 0;
+  if (l < level) return 0;
   char t[strlen(format) + 4];
   strcpy(t, format);
   strcat(t, "\n");
@@ -128,12 +135,14 @@ inline int Log::vlog(LogLevel l, cchar *format, va_list ap) {
 }
 
 inline int Log::operator()(LogLevel l, cchar *format, ...) {
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return vlog(l, format, ap);
 }
 
 inline int Log::operator()(cchar *format, ...) {
-  va_list ap; va_start(ap, format);
+  va_list ap;
+  va_start(ap, format);
   return vlog(LOG_LEVEL_DEFAULT, format, ap);
 }
 

@@ -36,10 +36,11 @@
 
 typedef int (*unit_test_fn_t)();
 
-class UnitTest { public:
+class UnitTest {
+ public:
   cchar *name;
   unit_test_fn_t fn;
-  virtual int run() { return fn(); } // 0 is success, otherwise failure
+  virtual int run() { return fn(); }  // 0 is success, otherwise failure
   int err(cchar *format, ...);
 
   static UnitTest *registered;

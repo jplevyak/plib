@@ -9,31 +9,44 @@ struct Stat {
   cchar *name;
   int64_t sum;
   int64_t count;
-  Stat *next; // next registered stat
+  Stat *next;  // next registered stat
 };
 
 void init_stat();
 void init_stat_thread();
-void register_stat(cchar *name, Stat &s); // per thread
-void register_global_stat(cchar *name, Stat &s); // per process
+void register_stat(cchar *name, Stat &s);         // per thread
+void register_global_stat(cchar *name, Stat &s);  // per process
 int process_stat_snap_internal();
-EXTERN Stat* stat_snap_requested EXTERN_INIT(0);
-static inline int process_stat_snap() { // call in event loop
-  if (stat_snap_requested)
-    return process_stat_snap_internal();
+EXTERN Stat *stat_snap_requested EXTERN_INIT(0);
+static inline int process_stat_snap() {  // call in event loop
+  if (stat_snap_requested) return process_stat_snap_internal();
   return 0;
 }
 void snap_stats(Stat **, int *);
 
 #define STAT(_s) DEF_TLS(Stat, _s)
-#define STAT_SUM(_s, _v) do  { TLS(_s).sum += _v; TLS(_s).count++; } while (0)
-#define STAT_ADD(_s, _v) do  { TLS(_s).count += _v; } while (0)
+#define STAT_SUM(_s, _v) \
+  do {                   \
+    TLS(_s).sum += _v;   \
+    TLS(_s).count++;     \
+  } while (0)
+#define STAT_ADD(_s, _v) \
+  do {                   \
+    TLS(_s).count += _v; \
+  } while (0)
 #define STAT_INC(_s) STAT_ADD(_s, 1)
 #define STAT_DEC(_s) STAT_ADD(_s, -1)
 
 #define GSTAT(_s) Stat _s
-#define GSTAT_SUM(_s, _v) do  { __sync_fetch_and_add(&_s.sum, _v); __sync_fetch_and_add(&_s.count, 1); } while (0)
-#define GSTAT_ADD(_s, _v) do  { __sync_fetch_and_add(&_s.count, _v); } while (0)
+#define GSTAT_SUM(_s, _v)               \
+  do {                                  \
+    __sync_fetch_and_add(&_s.sum, _v);  \
+    __sync_fetch_and_add(&_s.count, 1); \
+  } while (0)
+#define GSTAT_ADD(_s, _v)                \
+  do {                                   \
+    __sync_fetch_and_add(&_s.count, _v); \
+  } while (0)
 #define GSTAT_INC(_s) GSTAT_ADD(_s, 1)
 #define GSTAT_DEC(_s) GSTAT_ADD(_s, -1)
 

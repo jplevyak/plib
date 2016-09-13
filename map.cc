@@ -5,8 +5,7 @@
 
 #ifdef TEST_LIB
 
-void
-test_map() {
+void test_map() {
   typedef Map<cchar *, cchar *> SSMap;
   typedef MapElem<cchar *, cchar *> SSMapElem;
 #define form_SSMap(_p, _v) form_Map(SSMapElem, _p, _v)
@@ -15,7 +14,7 @@ test_map() {
   ssm.put("b", "B");
   ssm.put("c", "C");
   ssm.put("d", "D");
-  form_SSMap(x, ssm) ;
+  form_SSMap(x, ssm);
 
   StringChainHash<> h;
   cchar *hi = "hi", *ho = "ho", *hum = "hum", *hhi = "hhi";
@@ -91,4 +90,3 @@ test_map() {
   printf("map test\tPASSED\n");
 }
 #endif
-

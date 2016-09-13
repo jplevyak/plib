@@ -44,7 +44,7 @@ class Timer {
   double accumulator[TIMER_NUM_ACCUMULATORS];
 
   static double timespec_to_double(struct timespec &ts) {
-    return (double)ts.tv_sec + ((double)ts.tv_nsec)/1000000000.0;
+    return (double)ts.tv_sec + ((double)ts.tv_nsec) / 1000000000.0;
   }
   void start() {
     struct timespec ts;
@@ -75,9 +75,7 @@ class Timer {
     time = 0;
     return accumulator[i];
   }
-  void reset() {
-    time = start_time = 0;
-  }
+  void reset() { time = start_time = 0; }
   void restart() {
     time = 0;
     start();

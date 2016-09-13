@@ -6,14 +6,15 @@
 
 #define SERVER_SERVICE_PRIORITY 1
 
-class Service { public:
+class Service {
+ public:
   virtual void init() { reinit(); }
   virtual void reinit() {}
   virtual void start() {}
   virtual void stop() {}
 
   Service *next;
-  int priority; // higher priorities are run later
+  int priority;  // higher priorities are run later
 
   Service(int apriority = 0);
 
