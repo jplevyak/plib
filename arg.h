@@ -17,7 +17,7 @@
 #define ARG_OPT_NO_DEFAULT_USAGE_HEADER 0x2
 
 /* Argument Handling
-*/
+ */
 struct ArgumentState;
 
 typedef void ArgumentFunction(struct ArgumentState *arg_state, char *arg);

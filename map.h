@@ -47,8 +47,8 @@ class Map : public Vec<MapElem<K, C>, A> {
  public:
   typedef MapElem<K, C> ME;
   typedef Vec<ME, A> PType;
-  using PType::n;
   using PType::i;
+  using PType::n;
   using PType::v;
   ME *put(K akey, C avalue);
   ME *put(K akey);
@@ -102,10 +102,10 @@ template <class K, class AHashFns, class C, class A = DefaultAlloc>
 class HashSet : public Vec<C, A> {
  public:
   typedef Vec<C, A> V;
-  using V::n;
-  using V::i;
-  using V::v;
   using V::e;
+  using V::i;
+  using V::n;
+  using V::v;
   C get(K akey);
   C *put(C avalue);
 };

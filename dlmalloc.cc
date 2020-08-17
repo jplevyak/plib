@@ -1410,7 +1410,7 @@ static int win32_acquire_lock(MLOCK_T *sl) {
   for (;;) {
 #ifdef InterlockedCompareExchangePointer
     if (!InterlockedCompareExchange(sl, 1, 0)) return 0;
-#else /* Use older void* version */
+#else  /* Use older void* version */
     if (!InterlockedCompareExchange((void **)sl, (void *)1, (void *)0)) return 0;
 #endif /* InterlockedCompareExchangePointer */
     Sleep(0);
