@@ -1,6 +1,14 @@
-script: make && make test
 language: c++
+
 compiler:
   - clang
+
 os:
   - linux
+
+addons:
+  apt:
+    packages:
+      - libgc-dev
+
+script: make && make test
