@@ -116,6 +116,17 @@ static inline char *skip_eol(char *p) {
   return p;
 }
 
+// https://arxiv.org/ftp/arxiv/papers/1406/1406.2294.pdf
+static inline int32_t consistent_hash(uint64_t key, int32_t num_buckets) {
+  int64_t b = -1, j = 0;
+  while (j < num_buckets) {
+    b = j;
+    key = key * 2862933555777941757ULL + 1;
+    j = (b + 1) * (double(1LL << 31) / double((key >> 33) + 1));
+  }
+  return b;
+}
+
 int appendfile2fp(FILE *fp, char *filename);
 // filename = p1 + p2 + p3 + 4
 bool is_directory(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);

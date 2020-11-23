@@ -14,7 +14,7 @@ void test_map() {
   ssm.put("b", "B");
   ssm.put("c", "C");
   ssm.put("d", "D");
-  form_SSMap(x, ssm);
+  form_SSMap(x, ssm) {}
 
   StringChainHash<> h;
   cchar *hi = "hi", *ho = "ho", *hum = "hum", *hhi = "hhi";
