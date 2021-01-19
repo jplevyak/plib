@@ -1518,3 +1518,13 @@ uint128 hash128(const void *message, size_t mlen) {
     return hash128final(&z, key, 0);
   }
 }
+
+int32 JumpConsistentHash(uint64 key, int32 num_buckets) {
+  int64 b = -1, j = 0;
+  while (j < num_buckets) {
+    b = j;
+    key = key * 2862933555777941757ULL + 1;
+    j = (b + 1) * (double(1LL << 31) / double((key >> 33) + 1));
+  }
+  return b;
+}
