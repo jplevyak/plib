@@ -128,10 +128,13 @@ inline int GlobalLogTag::operator()(LogLevel l, cchar *format, ...) {
 
 inline int Log::vlog(LogLevel l, cchar *format, va_list ap) {
   if (l < level) return 0;
-  char t[strlen(format) + 4];
+  char *t = (char*)malloc(strlen(format) + 4);
   strcpy(t, format);
   strcat(t, "\n");
-  return vfprintf(fp, t, ap);
+  int result = vfprintf(fp, t, ap);
+  va_end(ap);
+  free(t);
+  return result;
 }
 
 inline int Log::operator()(LogLevel l, cchar *format, ...) {

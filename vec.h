@@ -172,7 +172,7 @@ extern uintptr_t open_hash_primes[256];
 
 template <class C, class A, int S>
 inline Vec<C, A, S>::Vec() : n(0), i(0), v(0) {
-  memset(&e[0], 0, sizeof(e));
+  memset((void*)&e[0], 0, sizeof(e));
 }
 
 template <class C, class A, int S>
@@ -235,7 +235,7 @@ inline C Vec<C, A, S>::pop() {
 
 template <class C, class A, int S>
 inline void Vec<C, A, S>::set_clear() {
-  memset(v, 0, n * sizeof(C));
+  memset((void*)v, 0, n * sizeof(C));
 }
 
 template <class C, class A, int S>
@@ -311,7 +311,7 @@ inline void Vec<C, A, S>::move_internal(Vec<C, A, S> &vv) {
   n = vv.n;
   i = vv.i;
   if (vv.v == &vv.e[0]) {
-    memcpy(e, &vv.e[0], sizeof(e));
+    memcpy((void*)e, &vv.e[0], sizeof(e));
     v = e;
   } else
     v = vv.v;
@@ -331,7 +331,7 @@ inline void Vec<C, A, S>::copy(const Vec<C, A, S> &vv) {
     n = vv.n;
     i = vv.i;
     v = e;
-    memcpy(e, &vv.e[0], sizeof(e));
+    memcpy((void*)e, &vv.e[0], sizeof(e));
   } else {
     if (vv.v)
       copy_internal(vv);
@@ -361,7 +361,7 @@ inline void Vec<C, A, S>::prepend(const Vec<C> &vv) {
     int oldn = n;
     fill(n + vv.n);
     if (oldn) memmove(&v[vv.n], &v[0], oldn * sizeof(v[0]));
-    memcpy(&v[0], vv.v, vv.n * sizeof(v[0]));
+    memcpy((void*)&v[0], vv.v, vv.n * sizeof(v[0]));
   }
 }
 
@@ -510,10 +510,10 @@ void Vec<C, A, S>::set_to_vec() {
   n = x - v;
   if (i) {
     i = 2 << i;  // convert set allocation to reserve
-    if (i - n > 0) memset(&v[n], 0, (i - n) * (sizeof(C)));
+    if (i - n > 0) memset((void*)&v[n], 0, (i - n) * (sizeof(C)));
   } else {
     i = 0;
-    if (v == &e[0] && VEC_INTEGRAL_SIZE - n > 0) memset(&v[n], 0, (VEC_INTEGRAL_SIZE - n) * (sizeof(C)));
+    if (v == &e[0] && VEC_INTEGRAL_SIZE - n > 0) memset((void*)&v[n], 0, (VEC_INTEGRAL_SIZE - n) * (sizeof(C)));
   }
 }
 
@@ -549,7 +549,7 @@ template <class C, class A, int S>
 C &Vec<C, A, S>::insert(int index) {
   add();
   memmove(&v[index + 1], &v[index], (n - index - 1) * sizeof(C));
-  memset(&v[index], 0, sizeof(C));
+  memset((void*)&v[index], 0, sizeof(C));
   return v[index];
 }
 
@@ -558,16 +558,16 @@ void Vec<C, A, S>::reverse() {
   for (int i = 0; i < n / 2; i++) {
     C *s = &v[i], *e = &v[n - 1 - i];
     C t;
-    memcpy(&t, s, sizeof(t));
-    memcpy(s, e, sizeof(t));
-    memcpy(e, &t, sizeof(t));
+    memcpy((void*)&t, s, sizeof(t));
+    memcpy((void*)s, e, sizeof(t));
+    memcpy((void*)e, &t, sizeof(t));
   }
 }
 
 template <class C, class A, int S>
 void Vec<C, A, S>::copy_internal(const Vec<C, A, S> &vv) {
   if (i == vv.i && n == vv.n) {
-    memcpy(v, vv.v, n * sizeof(C));
+    memcpy((void*)v, vv.v, n * sizeof(C));
     return;
   }
   free();
@@ -576,8 +576,8 @@ void Vec<C, A, S>::copy_internal(const Vec<C, A, S> &vv) {
     n = vv.n;
     int nn = 2 << i;
     v = (C *)A::alloc(nn * sizeof(C));
-    memcpy(v, vv.v, n * sizeof(C));
-    memset(v + n, 0, (nn - n) * sizeof(C));
+    memcpy((void*)v, vv.v, n * sizeof(C));
+    memset((void*)(v + n), 0, (nn - n) * sizeof(C));
     return;
   }
   // is_vec()
@@ -591,8 +591,8 @@ void Vec<C, A, S>::copy_internal(const Vec<C, A, S> &vv) {
   }
   nl = 1 << nl;
   v = (C *)A::alloc(nl * sizeof(C));
-  memcpy(v, vv.v, n * sizeof(C));
-  memset(v + n, 0, (nl - vv.n) * sizeof(C));
+  memcpy((void*)v, vv.v, n * sizeof(C));
+  memset((void*)(v + n), 0, (nl - vv.n) * sizeof(C));
 }
 
 template <class C, class A, int S>
@@ -604,7 +604,7 @@ void Vec<C, A, S>::set_expand() {
   n = prime2[i];
   // allocate power of 2 so the fast path in add() will work after set_to_vec()
   v = (C *)A::alloc((2 << i) * sizeof(C));
-  memset(v, 0, n * sizeof(C));
+  memset((void*)v, 0, n * sizeof(C));
 }
 
 template <class C, class A, int S>
@@ -615,8 +615,8 @@ inline void Vec<C, A, S>::reserve(int x) {
   i = xx;
   void *vv = (void *)v;
   v = (C *)A::alloc(i * sizeof(C));
-  if (vv && n) memcpy(v, vv, n * sizeof(C));
-  memset(&v[n], 0, (i - n) * sizeof(C));
+  if (vv && n) memcpy((void*)v, vv, n * sizeof(C));
+  memset((void*)&v[n], 0, (i - n) * sizeof(C));
   if (vv && vv != e) A::free(vv);
 }
 
@@ -628,9 +628,9 @@ inline void Vec<C, A, S>::addx() {
   }
   if (v == e) {
     v = (C *)A::alloc(VEC_INITIAL_SIZE * sizeof(C));
-    memcpy(v, &e[0], n * sizeof(C));
+    memcpy((void*)v, &e[0], n * sizeof(C));
     assert(n < VEC_INITIAL_SIZE);
-    memset(&v[n], 0, (VEC_INITIAL_SIZE - n) * sizeof(C));
+    memset((void*)&v[n], 0, (VEC_INITIAL_SIZE - n) * sizeof(C));
   } else {
     if ((n & (n - 1)) == 0) {
       int nl = n * 2;
@@ -640,8 +640,8 @@ inline void Vec<C, A, S>::addx() {
         i = 0;
       void *vv = (void *)v;
       v = (C *)A::alloc(nl * sizeof(C));
-      memcpy(v, vv, n * sizeof(C));
-      memset(&v[n], 0, n * sizeof(C));
+      memcpy((void*)v, vv, n * sizeof(C));
+      memset((void*)&v[n], 0, n * sizeof(C));
       A::free(vv);
     }
   }
@@ -711,7 +711,7 @@ inline int unmarshal(Vec<C, A, S> &v, char *buf) {
   x += sizeof(int);
   if (v.n) {
     v.v = (C *)A::alloc(sizeof(C) * v.n);
-    memset(v.v, 0, sizeof(C) * v.n);
+    memset((void*)v.v, 0, sizeof(C) * v.n);
   } else
     v.v = v.e;
   for (int i = 0; i < v.n; i++) x += ::unmarshal(v.v[i], x);
@@ -734,7 +734,7 @@ inline int Vec<C, A, S>::read(int fd) {
   if ((r = ::read(fd, this, sizeof(*this))) < 0) return r;
   t += r;
   v = (C *)A::alloc(sizeof(C) * n);
-  memset(v, 0, sizeof(C) * n);
+  memset((void*)v, 0, sizeof(C) * n);
   if ((r = ::read(fd, v, n * sizeof(C))) < 0) return r;
   t += r;
   return t;

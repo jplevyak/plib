@@ -124,7 +124,7 @@ int Conn::put() {
         n++;
         b = b->next;
       }
-      struct iovec iovec[n];
+      struct iovec *iovec = (struct iovec*)malloc(sizeof(struct iovec) * n);
       b = &wbuf;
       int i = 0;
       while (b) {
@@ -134,6 +134,7 @@ int Conn::put() {
         b = b->next;
         r = writev(ofd, iovec, n);
       }
+      ::free(iovec);
     }
     if (r < 0) {
       switch (errno) {

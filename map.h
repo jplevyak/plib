@@ -19,7 +19,7 @@ template <class A>
 static inline char *_dupstr(cchar *s, cchar *e = 0) {
   int l = e ? e - s : strlen(s);
   char *ss = (char *)A::alloc(l + 1);
-  memcpy(ss, s, l);
+  memcpy((void*)ss, s, l);
   ss[l] = 0;
   return ss;
 }
@@ -711,7 +711,7 @@ inline void Env<K, C, A>::pop() {
 
 template <class C, class AHashFns, int N, class A>
 inline NBlockHash<C, AHashFns, N, A>::NBlockHash() : n(1), i(0) {
-  memset(&e[0], 0, sizeof(e));
+  memset((void*)&e[0], 0, sizeof(e));
   v = e;
 }
 
@@ -752,7 +752,7 @@ template <class C, class AHashFns, int N, class A>
 inline void NBlockHash<C, AHashFns, N, A>::size(int p2) {
   n = prime2[p2];
   v = (C *)A::alloc(n * sizeof(C) * N);
-  memset(v, 0, n * sizeof(C) * N);
+  memset((void*)v, 0, n * sizeof(C) * N);
 }
 
 template <class C, class AHashFns, int N, class A>
@@ -832,7 +832,7 @@ inline void NBlockHash<C, AHashFns, N, A>::clear() {
 
 template <class C, class AHashFns, int N, class A>
 inline void NBlockHash<C, AHashFns, N, A>::reset() {
-  if (v) memset(v, 0, n * N * sizeof(C));
+  if (v) memset((void*)v, 0, n * N * sizeof(C));
 }
 
 template <class C, class AHashFns, int N, class A>
@@ -850,12 +850,12 @@ inline void NBlockHash<C, AHashFns, N, A>::copy(const NBlockHash<C, AHashFns, N,
   n = hh.n;
   i = hh.i;
   if (hh.v == &hh.e[0]) {
-    memcpy(e, &hh.e[0], sizeof(e));
+    memcpy((void*)e, &hh.e[0], sizeof(e));
     v = e;
   } else {
     if (hh.v) {
       v = (C *)A::alloc(n * sizeof(C) * N);
-      memcpy(v, hh.v, n * sizeof(C) * N);
+      memcpy((void*)v, hh.v, n * sizeof(C) * N);
     } else
       v = 0;
   }
@@ -868,7 +868,7 @@ inline void NBlockHash<C, AHashFns, N, A>::move(NBlockHash<C, AHashFns, N, A> &h
   i = hh.i;
   v = hh.v;
   if (hh.v == &hh.e[0]) {
-    memcpy(e, &hh.e[0], sizeof(e));
+    memcpy((void*)e, &hh.e[0], sizeof(e));
     v = e;
   }
   hh.clear();

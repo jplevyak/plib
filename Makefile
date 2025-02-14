@@ -67,7 +67,7 @@ endif
 
 ifdef USE_GC
 CFLAGS += -DUSE_GC ${GC_CFLAGS}
-LIBS += -lgc
+LIBS += -lgc -lgccpp
 endif
 ifdef LEAK_DETECT
 CFLAGS += -DLEAK_DETECT  ${GC_CFLAGS}
