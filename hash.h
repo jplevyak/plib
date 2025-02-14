@@ -28,6 +28,4 @@ void hash128init(hash128state_t *state);
 void hash128update(hash128state_t *state, const void *data, size_t len);
 uint128 hash128final(hash128state_t *state, const void *data = 0, size_t len = 0);
 
-int32 jump_consistent_hash(uint64 key, int32 num_buckets);
-
 #endif
