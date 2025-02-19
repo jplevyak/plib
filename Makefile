@@ -101,7 +101,7 @@ ifeq ($(BUILD_VERSION),)
 endif
 VERSIONCFLAGS += -DMAJOR_VERSION=$(MAJOR) -DMINOR_VERSION=$(MINOR) -DBUILD_VERSION=\"$(BUILD_VERSION)\"
 
-CFLAGS += -Wall -std=c++2a
+CFLAGS += -Wall -std=c++23
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=1
 endif
