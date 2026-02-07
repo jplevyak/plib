@@ -4,7 +4,9 @@
 #ifndef _hash_H
 #define _hash_H
 
+#ifndef __APPLE__
 #include <emmintrin.h>
+#endif
 
 /*
  * These are noncryptographic hash and pseudo random number genreators from:

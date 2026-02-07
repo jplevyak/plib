@@ -219,7 +219,7 @@ void usage(ArgumentState *arg_state, char *arg) {
 #ifdef FreeBSD
                 " %-9qd",
 #else
-                " %-9ld",
+                " %-9lld",
 #endif
                 *(int64 *)desc[i].location);
         break;

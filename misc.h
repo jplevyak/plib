@@ -137,8 +137,12 @@ char *dupstrs(cchar *p1, cchar *p2 = 0, cchar *p3 = 0, cchar *p4 = 0);
 // mtu is -1 if unknown
 int getifaddrname(struct sockaddr_in *addr, int *pmtu = 0, char *ifname = 0, int ifname_len = 0);
 
+#ifndef htonll
 #define htonll(_x) (((uint64)htonl((uint32)_x)) | (((uint64)(htonl((uint32)((_x) >> 32)))) << 32))
+#endif
+#ifndef ntohll
 #define ntohll(_x) (((uint64)ntohl((uint32)_x)) | (((uint64)(ntohl((uint32)((_x) >> 32)))) << 32))
+#endif
 
 char *quote_string(cchar *s);
 char *escape_string(cchar *s);

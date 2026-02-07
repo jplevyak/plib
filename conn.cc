@@ -124,7 +124,7 @@ int Conn::put() {
         n++;
         b = b->next;
       }
-      struct iovec *iovec = (struct iovec*)malloc(sizeof(struct iovec) * n);
+      struct iovec *iovec = (struct iovec *)malloc(sizeof(struct iovec) * n);
       b = &wbuf;
       int i = 0;
       while (b) {
@@ -206,8 +206,9 @@ char *Conn::alloc_date_str() {
     date_time = t;
     struct tm m;
     gmtime_r(&t, &m);
-    date_string_len = sprintf(date_string, "%s, %02u %s %04u %02u:%02u:%02u GMT", weekdays[m.tm_wday], m.tm_mday,
-                              months[m.tm_mon], 1900 + m.tm_year, m.tm_hour, m.tm_min, m.tm_sec);
+    date_string_len =
+        snprintf(date_string, sizeof(date_string), "%s, %02u %s %04u %02u:%02u:%02u GMT", weekdays[m.tm_wday],
+                 m.tm_mday, months[m.tm_mon], 1900 + m.tm_year, m.tm_hour, m.tm_min, m.tm_sec);
   }
   char *ret = alloc_str(date_string, date_string_len);
   pthread_mutex_unlock(&date_mutex);
