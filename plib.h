@@ -95,6 +95,7 @@ class gc {};
 #include <string.h>
 #include <errno.h>
 #include <float.h>
+#include <inttypes.h>
 
 typedef int8_t int8;
 typedef uint8_t uint8;
